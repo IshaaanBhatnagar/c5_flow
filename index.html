@@ -4,429 +4,1062 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width,initial-scale=1" />
 <title>ClearTax — UAE Peppol DCTCE 5-Corner (C5) Flow</title>
-<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
 <style>
 :root {
-  --navy: #1E2761;
-  --navy-deep: #151A45;
-  --ice: #CADCFC;
-  --teal: #00A896;
-  --teal-soft: #E6F7F4;
-  --coral: #F96167;
-  --warning: #FFF4D6;
-  --warning-border: #C58A1A;
-  --sand: #F5F2EB;
-  --grey: #5C6679;
-  --grey-light: #DDDDDD;
-  --black: #212121;
+  --navy: #0F1E47;
+  --navy-2: #1E2761;
+  --navy-deep: #0A1530;
+  --ice: #DCE5F5;
+  --teal: #00C9A7;
+  --teal-deep: #00A188;
+  --teal-soft: #E6FAF5;
+  --purple: #7B61FF;
+  --purple-soft: #F1EDFF;
+  --coral: #FF6B6B;
+  --coral-soft: #FFEDED;
+  --amber: #F4B33C;
+  --amber-soft: #FFF6E0;
+  --sand: #F7F4EC;
+  --grey: #6B7589;
+  --grey-light: #E5E9F0;
+  --black: #1C2433;
   --white: #FFFFFF;
 }
 * { box-sizing: border-box; }
 html, body { margin: 0; padding: 0; }
 body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif;
-  font-size: 14px; line-height: 1.55; color: var(--black); background: #FAFAFA;
+  font-family: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+  font-size: 15px; line-height: 1.6; color: var(--black); background: #FAFBFD;
+  -webkit-font-smoothing: antialiased;
 }
-.wrap { max-width: 1200px; margin: 0 auto; padding: 32px 28px 80px; }
-header.hero {
-  background: var(--navy); color: var(--white); padding: 26px 32px; border-radius: 6px;
-  position: relative; overflow: hidden; margin-bottom: 22px;
-}
-header.hero::before {
-  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--teal);
-}
-.hero-eyebrow { font-size: 11px; letter-spacing: 4px; color: var(--teal); font-weight: 700; }
-.hero-title { font-size: 28px; font-weight: 800; margin: 6px 0; line-height: 1.15; }
-.hero-sub { font-size: 13px; color: var(--ice); font-style: italic; max-width: 880px; line-height: 1.55; }
-h2 { font-size: 18px; font-weight: 700; color: var(--navy); margin: 26px 0 10px; }
-h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 18px 0 8px; }
 
-/* Step controls bar */
+/* ===== HERO ===== */
+.hero {
+  background: linear-gradient(135deg, var(--navy-deep) 0%, var(--navy) 50%, var(--navy-2) 100%);
+  color: var(--white);
+  padding: 56px 28px 48px;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: ""; position: absolute;
+  top: -50%; right: -20%; width: 60%; height: 200%;
+  background: radial-gradient(circle, rgba(0,201,167,0.18) 0%, transparent 60%);
+  pointer-events: none;
+}
+.hero-inner { max-width: 1280px; margin: 0 auto; position: relative; z-index: 1; }
+.hero-eyebrow {
+  display: inline-block;
+  font-size: 11px; letter-spacing: 4px; font-weight: 700; text-transform: uppercase;
+  color: var(--teal);
+  background: rgba(0,201,167,0.12);
+  border: 1px solid rgba(0,201,167,0.3);
+  padding: 6px 14px; border-radius: 100px; margin-bottom: 20px;
+}
+.hero-title {
+  font-size: 44px; font-weight: 800; letter-spacing: -1px;
+  line-height: 1.05; margin: 0 0 14px; max-width: 880px;
+}
+.hero-title .emph { color: var(--teal); }
+.hero-sub {
+  font-size: 17px; color: var(--ice); max-width: 780px; line-height: 1.55;
+  margin: 0 0 28px;
+}
+.hero-stats {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-top: 8px;
+  max-width: 1100px;
+}
+@media (max-width: 980px) { .hero-stats { grid-template-columns: repeat(2,1fr); } }
+.stat-pill {
+  background: rgba(255,255,255,0.06);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 12px; padding: 14px 18px;
+  backdrop-filter: blur(10px);
+}
+.stat-pill .stat-num {
+  font-size: 24px; font-weight: 800; color: var(--white);
+  letter-spacing: -0.5px; line-height: 1.1;
+}
+.stat-pill .stat-num .accent { color: var(--teal); }
+.stat-pill .stat-lbl {
+  font-size: 12px; color: var(--ice); margin-top: 4px; opacity: 0.85;
+}
+
+/* ===== PLATFORM PROOF ===== */
+.platform-proof {
+  background: linear-gradient(180deg, #FAFBFD 0%, #F2F5FB 100%);
+  padding: 56px 28px 48px;
+  border-bottom: 1px solid var(--grey-light);
+}
+.proof-inner { max-width: 1280px; margin: 0 auto; }
+.proof-eyebrow {
+  font-size: 11px; letter-spacing: 4px; font-weight: 700; text-transform: uppercase;
+  color: var(--teal-deep); margin-bottom: 8px;
+}
+.proof-title {
+  font-size: 32px; font-weight: 800; letter-spacing: -0.6px; color: var(--navy);
+  margin: 0 0 32px; line-height: 1.15;
+}
+
+.proof-grid {
+  display: grid; grid-template-columns: 1fr auto 1fr; gap: 22px;
+  margin-bottom: 32px; align-items: stretch;
+}
+@media (max-width: 980px) { .proof-grid { grid-template-columns: 1fr; } }
+
+.cloud-card {
+  background: var(--white); border-radius: 18px; padding: 26px 28px;
+  box-shadow: 0 12px 40px rgba(15,30,71,0.08);
+  border: 1px solid var(--grey-light);
+  position: relative;
+}
+.cloud-card.primary { border-top: 4px solid var(--teal); }
+.cloud-card.secondary { border-top: 4px solid var(--purple); }
+
+.cloud-logo { margin-bottom: 18px; }
+.logo-bubble {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 92px; height: 56px; border-radius: 12px;
+  font-weight: 800; font-size: 22px; letter-spacing: 0.5px;
+  color: var(--white); position: relative;
+}
+.logo-oci {
+  background: linear-gradient(135deg, #C74634, #E63E2D);
+  box-shadow: 0 6px 20px rgba(199,70,52,0.35);
+}
+.logo-aws {
+  background: linear-gradient(135deg, #232F3E, #FF9900);
+  color: #fff;
+  box-shadow: 0 6px 20px rgba(255,153,0,0.35);
+  font-style: italic;
+}
+
+.cloud-tag {
+  font-size: 10px; letter-spacing: 3px; font-weight: 800; text-transform: uppercase;
+  color: var(--teal-deep); margin-bottom: 6px;
+}
+.cloud-card.secondary .cloud-tag { color: var(--purple); }
+.cloud-region {
+  font-size: 22px; font-weight: 800; color: var(--navy); margin-bottom: 14px;
+  letter-spacing: -0.3px;
+}
+
+.cloud-meta { display: flex; flex-direction: column; gap: 8px; }
+.meta-row {
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12.5px; padding-bottom: 8px; border-bottom: 1px dashed var(--grey-light);
+}
+.meta-row:last-child { border-bottom: 0; padding-bottom: 0; }
+.meta-k { color: var(--grey); font-weight: 600; letter-spacing: 0.2px; }
+.meta-v { color: var(--black); font-weight: 600; text-align: right; }
+
+/* Sync indicator */
+.sync-indicator {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  background: linear-gradient(180deg, var(--teal) 0%, var(--teal-deep) 100%);
+  border-radius: 16px; padding: 22px 16px;
+  color: var(--white); min-width: 180px;
+  box-shadow: 0 12px 30px rgba(0,201,167,0.25);
+}
+.sync-arrow { font-size: 36px; line-height: 1; margin-bottom: 4px; }
+.sync-label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; opacity: 0.9; margin-bottom: 14px; }
+.sync-stat { font-size: 14px; margin-bottom: 4px; }
+.sync-stat strong { font-weight: 800; }
+.sync-stat-foot { font-size: 10px; opacity: 0.85; margin-top: 8px; text-align: center; line-height: 1.35; }
+
+/* Scale bar */
+.scale-bar {
+  background: var(--white); border-radius: 18px;
+  padding: 24px 26px; margin-bottom: 22px;
+  display: flex; align-items: center; justify-content: space-around; gap: 12px;
+  box-shadow: 0 6px 24px rgba(15,30,71,0.06);
+  border: 1px solid var(--grey-light);
+  flex-wrap: wrap;
+}
+.scale-stat { text-align: center; flex: 1; min-width: 140px; }
+.scale-num {
+  font-size: 36px; font-weight: 800; color: var(--navy);
+  letter-spacing: -1.5px; line-height: 1;
+}
+.scale-num .m { color: var(--teal); font-size: 28px; }
+.scale-lbl { font-size: 11px; color: var(--grey); margin-top: 6px; line-height: 1.4; }
+.scale-divider { width: 1px; height: 50px; background: var(--grey-light); }
+@media (max-width: 980px) { .scale-divider { display: none; } }
+
+/* Badges row */
+.badges-row {
+  display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+}
+.cred-badge {
+  background: var(--white); border: 1px solid var(--grey-light);
+  padding: 8px 16px; border-radius: 100px;
+  font-size: 12.5px; font-weight: 600; color: var(--navy);
+  box-shadow: 0 2px 8px rgba(15,30,71,0.04);
+}
+
+/* ===== STAGE ===== */
+.stage {
+  max-width: 1280px; margin: 0 auto; padding: 32px 28px 0;
+}
 .controls {
-  display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--white);
-  border: 1px solid var(--grey-light); border-radius: 6px; margin-bottom: 18px;
+  display: flex; align-items: center; gap: 14px; padding: 14px 20px;
+  background: var(--white); border: 1px solid var(--grey-light);
+  border-radius: 14px;
+  box-shadow: 0 4px 20px rgba(15,30,71,0.05);
+  margin-bottom: 24px; flex-wrap: wrap;
 }
 .btn {
-  background: var(--navy); color: var(--white); border: 0; padding: 9px 18px;
-  font-size: 13px; font-weight: 700; border-radius: 4px; cursor: pointer;
-  letter-spacing: 0.4px;
+  background: var(--navy); color: var(--white); border: 0;
+  padding: 11px 20px; font-size: 13px; font-weight: 700;
+  border-radius: 8px; cursor: pointer; letter-spacing: 0.3px;
+  transition: all 0.15s ease;
 }
-.btn:hover { background: var(--navy-deep); }
-.btn:disabled { background: #999; cursor: not-allowed; opacity: 0.6; }
-.btn.secondary { background: var(--white); color: var(--navy); border: 1px solid var(--grey-light); }
+.btn:hover { background: var(--navy-deep); transform: translateY(-1px); }
+.btn:disabled { background: #B5BCCB; cursor: not-allowed; transform: none; }
+.btn.primary { background: var(--teal); color: var(--white); }
+.btn.primary:hover { background: var(--teal-deep); }
+.btn.secondary {
+  background: var(--white); color: var(--navy);
+  border: 1px solid var(--grey-light);
+}
 .btn.secondary:hover { background: var(--sand); }
-.btn.primary { background: var(--teal); }
-.btn.primary:hover { background: #007F73; }
-.step-counter { font-size: 13px; color: var(--grey); }
-.step-counter strong { color: var(--navy); font-size: 16px; }
-
-/* Caption box */
-.caption {
-  background: var(--white); border: 1px solid var(--grey-light); border-left: 4px solid var(--teal);
-  border-radius: 4px; padding: 14px 18px; margin-bottom: 18px; min-height: 64px;
+.step-counter {
+  font-size: 13px; color: var(--grey); display: flex; align-items: center; gap: 6px;
 }
-.caption-eyebrow { font-size: 10px; color: var(--teal); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
-.caption-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
-.caption-body { font-size: 13px; color: var(--black); line-height: 1.55; }
-.caption-meta { font-size: 11px; color: var(--grey); font-style: italic; margin-top: 6px; }
-
-/* Diagram container */
-.diagram-card {
-  background: var(--white); border: 1px solid var(--grey-light); border-radius: 6px;
-  padding: 20px; overflow-x: auto; margin-bottom: 22px; min-height: 380px;
+.step-counter .num {
+  background: var(--navy); color: var(--white); padding: 4px 12px;
+  border-radius: 100px; font-weight: 700; font-size: 13px;
+  min-width: 70px; text-align: center;
 }
-.mermaid { font-family: inherit; }
 
-/* Legend */
-.legend {
-  display: flex; gap: 22px; flex-wrap: wrap; padding: 12px 18px; background: var(--sand);
-  border-radius: 4px; margin-bottom: 22px; font-size: 11.5px;
+/* Two-column layout */
+.workspace {
+  display: grid; grid-template-columns: 1.15fr 1fr; gap: 24px;
+  margin-bottom: 28px;
 }
-.legend-item { display: flex; align-items: center; gap: 6px; }
-.legend-swatch { width: 14px; height: 14px; border-radius: 2px; }
+@media (max-width: 1100px) {
+  .workspace { grid-template-columns: 1fr; }
+}
 
-/* Reference tables */
-.ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
-@media (max-width: 900px) { .ref-grid { grid-template-columns: 1fr; } }
-.ref-card {
-  background: var(--white); border: 1px solid var(--grey-light); border-radius: 6px;
-  padding: 16px 18px;
+/* ===== DIAGRAM PANEL ===== */
+.diagram-panel {
+  background: var(--white); border: 1px solid var(--grey-light);
+  border-radius: 16px; padding: 28px;
+  box-shadow: 0 8px 30px rgba(15,30,71,0.05);
+  position: relative; overflow: hidden;
 }
-.ref-card h3 { margin-top: 0; font-size: 14px; }
-table.ref { width: 100%; border-collapse: collapse; font-size: 12.5px; }
-table.ref th, table.ref td { border: 1px solid var(--grey-light); padding: 7px 10px; text-align: left; }
-table.ref th { background: var(--navy); color: var(--white); font-size: 11.5px; }
-.code { font-family: "SF Mono", Consolas, monospace; font-size: 12px; font-weight: 700; color: var(--navy); }
-.code.green { color: var(--teal); }
-.code.red { color: var(--coral); }
-.code.amber { color: var(--warning-border); }
+.diagram-panel::before {
+  content: "";
+  position: absolute; top: 0; left: 0; right: 0; height: 4px;
+  background: linear-gradient(90deg, var(--navy), var(--teal), var(--purple));
+}
+.diagram-title {
+  font-size: 11px; letter-spacing: 3px; font-weight: 700; text-transform: uppercase;
+  color: var(--grey); margin-bottom: 22px;
+}
 
-.callout {
-  background: var(--warning); border: 1px solid var(--warning-border); border-radius: 4px;
-  padding: 12px 16px; font-size: 12.5px; margin-top: 18px;
+.corners-grid {
+  display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px;
+  position: relative;
 }
-.callout strong { color: var(--warning-border); }
+.corner {
+  position: relative;
+  background: var(--white);
+  border: 2px solid var(--grey-light);
+  border-radius: 14px; padding: 16px 10px; text-align: center;
+  transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.corner.tax {
+  background: linear-gradient(180deg, var(--navy-deep), var(--navy));
+  border-color: var(--navy-deep); color: var(--white);
+}
+.corner.cleartax {
+  background: linear-gradient(180deg, #003A2F, #00574A);
+  border-color: var(--teal-deep); color: var(--white);
+}
+.corner.active {
+  transform: translateY(-8px) scale(1.04);
+  box-shadow: 0 16px 48px rgba(0,201,167,0.35), 0 0 0 4px rgba(0,201,167,0.25);
+  border-color: var(--teal);
+}
+.corner.active.cleartax {
+  box-shadow: 0 16px 48px rgba(0,201,167,0.5), 0 0 0 4px rgba(0,201,167,0.4);
+}
+.corner-code {
+  font-size: 10px; letter-spacing: 3px; font-weight: 700; color: var(--teal);
+  margin-bottom: 6px; text-transform: uppercase;
+}
+.corner.cleartax .corner-code { color: var(--teal); }
+.corner-letter {
+  font-size: 28px; font-weight: 800; color: var(--navy); letter-spacing: -1px;
+  line-height: 1;
+}
+.corner.tax .corner-letter, .corner.cleartax .corner-letter { color: var(--white); }
+.corner-name {
+  font-size: 11px; font-weight: 700; color: var(--black); margin-top: 6px;
+  line-height: 1.25; min-height: 28px;
+}
+.corner.tax .corner-name, .corner.cleartax .corner-name { color: var(--white); }
+.corner-sub {
+  font-size: 10px; color: var(--grey); font-style: italic; margin-top: 4px;
+}
+.corner.tax .corner-sub, .corner.cleartax .corner-sub { color: var(--ice); opacity: 0.85; }
+.corner-pulse {
+  position: absolute; inset: -2px;
+  border-radius: 14px;
+  border: 2px solid var(--teal);
+  pointer-events: none;
+  opacity: 0;
+}
+.corner.active .corner-pulse {
+  animation: pulse 1.6s ease-out infinite;
+}
+@keyframes pulse {
+  0% { opacity: 0.8; transform: scale(1); }
+  100% { opacity: 0; transform: scale(1.15); }
+}
+.we-label {
+  position: absolute; top: -12px; left: 50%; transform: translateX(-50%);
+  background: var(--teal); color: var(--white);
+  font-size: 9px; font-weight: 700; letter-spacing: 1px;
+  padding: 3px 10px; border-radius: 100px;
+  box-shadow: 0 4px 12px rgba(0,201,167,0.4);
+  white-space: nowrap;
+}
+
+/* Message bus underneath corners */
+.message-bus {
+  margin-top: 26px; padding: 20px;
+  background: linear-gradient(180deg, var(--sand), #FCFAF4);
+  border-radius: 14px; border: 1px dashed #D9D2BD;
+}
+.message-bus-title {
+  font-size: 10px; letter-spacing: 2px; font-weight: 700; color: var(--grey);
+  text-transform: uppercase; margin-bottom: 12px;
+}
+.message-row {
+  display: flex; align-items: center; gap: 14px;
+  padding: 10px 14px; background: var(--white); border-radius: 10px;
+  border: 1px solid var(--grey-light);
+  font-size: 13px;
+}
+.msg-from-to {
+  font-weight: 700; color: var(--navy); min-width: 90px;
+  font-size: 12px; letter-spacing: 0.3px;
+}
+.msg-from-to .arrow { color: var(--teal); font-weight: 900; }
+.msg-name { color: var(--black); flex: 1; }
+.msg-name code {
+  background: var(--purple-soft); color: var(--purple);
+  padding: 2px 8px; border-radius: 6px; font-size: 11px; font-weight: 700;
+  font-family: "SF Mono", Consolas, monospace;
+}
+.msg-meta {
+  font-size: 11px; color: var(--grey); font-style: italic;
+  display: flex; align-items: center; gap: 4px;
+}
+
+/* ===== NARRATIVE PANEL ===== */
+.narrative {
+  display: flex; flex-direction: column; gap: 16px;
+}
+.narrative-card {
+  background: var(--white); border: 1px solid var(--grey-light);
+  border-radius: 14px; padding: 20px 22px;
+  box-shadow: 0 4px 16px rgba(15,30,71,0.04);
+  position: relative; overflow: hidden;
+}
+.narrative-card.hero-step {
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-2) 100%);
+  color: var(--white); border: 0;
+}
+.step-num-bubble {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 38px; height: 38px; border-radius: 50%;
+  background: var(--teal); color: var(--white);
+  font-weight: 800; font-size: 16px;
+  box-shadow: 0 6px 18px rgba(0,201,167,0.3);
+  margin-bottom: 10px;
+}
+.step-title {
+  font-size: 22px; font-weight: 800; letter-spacing: -0.4px;
+  line-height: 1.2; margin: 0 0 8px; color: var(--white);
+}
+.step-meta {
+  font-size: 12px; color: var(--ice); opacity: 0.9; font-weight: 500;
+  letter-spacing: 0.3px;
+}
+
+.section-card { padding: 16px 18px; border-left: 4px solid; border-radius: 8px; }
+.section-card h4 {
+  margin: 0 0 8px; font-size: 13px; font-weight: 700;
+  letter-spacing: 0.5px; text-transform: uppercase;
+  display: flex; align-items: center; gap: 8px;
+}
+.section-card p { margin: 0; font-size: 14px; line-height: 1.6; color: var(--black); }
+.section-card ul { margin: 6px 0 0; padding-left: 20px; }
+.section-card li { font-size: 14px; line-height: 1.55; color: var(--black); margin-bottom: 4px; }
+.icon { width: 20px; height: 20px; flex-shrink: 0; }
+
+.section-explain {
+  background: #F5F8FE; border-color: #5479D6;
+}
+.section-explain h4 { color: #4A6FCF; }
+
+.section-cleartax {
+  background: var(--teal-soft); border-color: var(--teal);
+}
+.section-cleartax h4 { color: var(--teal-deep); }
+.section-cleartax li::marker { color: var(--teal); }
+
+.section-prevents {
+  background: var(--coral-soft); border-color: var(--coral);
+}
+.section-prevents h4 { color: #D04545; }
+
+/* ===== TIMELINE ===== */
+.timeline-bar {
+  background: var(--white); border: 1px solid var(--grey-light);
+  border-radius: 14px; padding: 18px 22px; margin-bottom: 28px;
+  box-shadow: 0 4px 16px rgba(15,30,71,0.04);
+}
+.timeline-title {
+  font-size: 11px; letter-spacing: 2px; font-weight: 700; color: var(--grey);
+  text-transform: uppercase; margin-bottom: 14px;
+}
+.timeline-track {
+  position: relative; height: 50px;
+}
+.timeline-line {
+  position: absolute; top: 14px; left: 0; right: 0; height: 4px;
+  background: var(--grey-light); border-radius: 2px;
+}
+.timeline-progress {
+  position: absolute; top: 14px; left: 0; height: 4px;
+  background: linear-gradient(90deg, var(--teal), var(--teal-deep));
+  border-radius: 2px; transition: width 0.4s ease;
+}
+.timeline-dots {
+  position: relative; display: grid;
+  grid-template-columns: repeat(12, 1fr); gap: 0;
+}
+.t-dot {
+  position: relative; cursor: pointer;
+  display: flex; flex-direction: column; align-items: center;
+  padding-top: 0;
+}
+.t-dot-circle {
+  width: 32px; height: 32px; border-radius: 50%;
+  background: var(--white); border: 3px solid var(--grey-light);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 700; color: var(--grey);
+  transition: all 0.2s ease; z-index: 1;
+}
+.t-dot.done .t-dot-circle {
+  background: var(--teal); border-color: var(--teal); color: var(--white);
+}
+.t-dot.active .t-dot-circle {
+  background: var(--white); border-color: var(--teal); color: var(--teal);
+  box-shadow: 0 0 0 6px rgba(0,201,167,0.2);
+  transform: scale(1.15);
+}
+.t-dot:hover .t-dot-circle { transform: scale(1.1); }
+.t-dot-label {
+  font-size: 9px; color: var(--grey); margin-top: 6px; text-align: center;
+  line-height: 1.2; max-width: 80px;
+}
+.t-dot.active .t-dot-label, .t-dot.done .t-dot-label { color: var(--navy); font-weight: 600; }
+
+/* ===== REFERENCE / FAQ ===== */
+.reference {
+  max-width: 1280px; margin: 0 auto; padding: 0 28px 60px;
+}
+.ref-section {
+  background: var(--white); border: 1px solid var(--grey-light);
+  border-radius: 14px; padding: 24px 26px; margin-bottom: 18px;
+  box-shadow: 0 4px 16px rgba(15,30,71,0.04);
+}
+.ref-section summary {
+  cursor: pointer; list-style: none;
+  display: flex; align-items: center; justify-content: space-between;
+  font-size: 16px; font-weight: 700; color: var(--navy);
+}
+.ref-section summary::-webkit-details-marker { display: none; }
+.ref-section summary::after {
+  content: "+"; font-size: 20px; color: var(--grey);
+  transition: transform 0.2s;
+}
+.ref-section[open] summary::after { content: "−"; }
+.ref-section-body { margin-top: 18px; }
+.ref-section h3 { font-size: 14px; margin: 16px 0 8px; color: var(--navy); }
+.ref-section h3:first-child { margin-top: 0; }
+table.ref { width: 100%; border-collapse: collapse; font-size: 13px; }
+table.ref th, table.ref td {
+  border: 1px solid var(--grey-light); padding: 10px 14px; text-align: left;
+}
+table.ref th {
+  background: var(--sand); color: var(--navy); font-weight: 700;
+  font-size: 12px; letter-spacing: 0.3px;
+}
+.code {
+  font-family: "SF Mono", Consolas, monospace; font-size: 12px;
+  font-weight: 700; padding: 2px 8px; border-radius: 6px;
+}
+.code.green { background: var(--teal-soft); color: var(--teal-deep); }
+.code.red { background: var(--coral-soft); color: #D04545; }
+.code.amber { background: var(--amber-soft); color: #B5811A; }
+.code.purple { background: var(--purple-soft); color: var(--purple); }
 
 .sources {
-  font-size: 11.5px; color: var(--grey); margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--grey-light);
+  font-size: 12px; color: var(--grey); padding-top: 24px;
+  border-top: 1px solid var(--grey-light); line-height: 1.7;
 }
-.sources a { color: var(--teal); text-decoration: none; }
+.sources a { color: var(--teal-deep); text-decoration: none; }
 .sources a:hover { text-decoration: underline; }
 </style>
 </head>
 <body>
 
-<div class="wrap">
-
+<!-- ============================================================
+     HERO
+============================================================ -->
 <header class="hero">
-  <div class="hero-eyebrow">UAE PEPPOL DCTCE</div>
-  <div class="hero-title">5-Corner (C5) Model — Step-by-Step Flow</div>
-  <div class="hero-sub">PINT-AE rides on the Peppol Decentralised Continuous Transaction Control and Exchange model. Five corners. <strong style="color:var(--white);">Both C2 and C3 report Tax Data Documents to C5 (FTA)</strong> — the dual-reporting model is what gives the regulator independent visibility on each side.</div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">UAE PEPPOL DCTCE — 5-CORNER MODEL</div>
+    <h1 class="hero-title">Every UAE e-invoice goes through <span class="emph">12 steps.</span><br>ClearTax handles all of them.</h1>
+    <p class="hero-sub">Behind one signed PINT-AE invoice is a complex choreography between five parties: your system, our platform, the buyer's provider, the buyer, and the FTA. Walk through it step-by-step and see what we shield you from.</p>
+    <div class="hero-stats">
+      <div class="stat-pill">
+        <div class="stat-num"><span class="accent">10K</span> /sec</div>
+        <div class="stat-lbl">Validation throughput</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num"><span class="accent">99%</span></div>
+        <div class="stat-lbl">First-time validation success</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num"><span class="accent">≤15</span> min</div>
+        <div class="stat-lbl">Reporting window to FTA</div>
+      </div>
+      <div class="stat-pill">
+        <div class="stat-num">OCI <span class="accent">+</span> AWS</div>
+        <div class="stat-lbl">Multi-cloud, both in UAE</div>
+      </div>
+    </div>
+  </div>
 </header>
 
-<div class="controls">
-  <button class="btn secondary" id="btn-prev">◀ Previous</button>
-  <button class="btn primary" id="btn-next">Next Step ▶</button>
-  <div class="step-counter">Step <strong id="step-num">1</strong> of <strong id="step-total">12</strong></div>
-  <div style="flex:1;"></div>
-  <button class="btn secondary" id="btn-reset">Reset</button>
-  <button class="btn secondary" id="btn-all">Show all</button>
-</div>
 
-<div class="caption" id="caption">
-  <div class="caption-eyebrow" id="cap-eyebrow">STEP 1 — INVOICE SUBMISSION</div>
-  <div class="caption-title" id="cap-title">C1 submits invoice to C2</div>
-  <div class="caption-body" id="cap-body">The supplier's source system (ERP, core banking, PAS, or a manual upload) hands the invoice to ClearTax — sitting at C2 — over a REST API. Synchronous call.</div>
-  <div class="caption-meta" id="cap-meta">Actors: C1 → C2  •  Protocol: REST  •  Timing: Sync</div>
-</div>
+<!-- ============================================================
+     PLATFORM PROOF
+============================================================ -->
+<section class="platform-proof">
+  <div class="proof-inner">
+    <div class="proof-eyebrow">PLATFORM PROOF — built for the regulator-strict workloads</div>
+    <h2 class="proof-title">In-country, multi-cloud, audited at scale</h2>
+    <div class="proof-grid">
+      <!-- DC card -->
+      <div class="cloud-card primary">
+        <div class="cloud-logo">
+          <span class="logo-bubble logo-oci">OCI</span>
+        </div>
+        <div class="cloud-tag">PRODUCTION · PRIMARY</div>
+        <div class="cloud-region">Abu Dhabi · UAE</div>
+        <div class="cloud-meta">
+          <div class="meta-row"><span class="meta-k">Provider</span><span class="meta-v">Oracle Cloud Infrastructure</span></div>
+          <div class="meta-row"><span class="meta-k">Zones</span><span class="meta-v">2 Availability Domains, in country</span></div>
+          <div class="meta-row"><span class="meta-k">Tenancy</span><span class="meta-v">Single-tenant production stack</span></div>
+          <div class="meta-row"><span class="meta-k">Encryption</span><span class="meta-v">AES-256 at rest · TLS 1.2+ in transit</span></div>
+        </div>
+      </div>
 
-<div class="diagram-card">
-  <div class="mermaid" id="diagram"></div>
-</div>
+      <!-- Sync indicator -->
+      <div class="sync-indicator">
+        <div class="sync-arrow">⇄</div>
+        <div class="sync-label">Auto-sync</div>
+        <div class="sync-stat"><strong>RTO ≤ 4 hr</strong></div>
+        <div class="sync-stat"><strong>RPO ≤ 15 min</strong></div>
+        <div class="sync-stat-foot">Local-to-local · zero cross-border egress</div>
+      </div>
 
-<div class="legend">
-  <div class="legend-item"><div class="legend-swatch" style="background:#1E2761;"></div>C1 — Supplier</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#00A896;"></div>C2 — ClearTax (Sender AP)</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#3F5BAA;"></div>C3 — Receiver AP</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#5675C8;"></div>C4 — Buyer</div>
-  <div class="legend-item"><div class="legend-swatch" style="background:#151A45;"></div>C5 — FTA (Tax Authority)</div>
-</div>
+      <!-- DR card -->
+      <div class="cloud-card secondary">
+        <div class="cloud-logo">
+          <span class="logo-bubble logo-aws">AWS</span>
+        </div>
+        <div class="cloud-tag">DR · SECONDARY</div>
+        <div class="cloud-region">Dubai · UAE</div>
+        <div class="cloud-meta">
+          <div class="meta-row"><span class="meta-k">Provider</span><span class="meta-v">Amazon Web Services me-central-1</span></div>
+          <div class="meta-row"><span class="meta-k">Zones</span><span class="meta-v">3 Availability Zones in region</span></div>
+          <div class="meta-row"><span class="meta-k">Tenancy</span><span class="meta-v">Independent stack — different vendor</span></div>
+          <div class="meta-row"><span class="meta-k">Backup</span><span class="meta-v">Cross-AZ encrypted, hourly snapshot</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Scale + compliance proof bar -->
+    <div class="scale-bar">
+      <div class="scale-stat">
+        <div class="scale-num">300<span class="m">M+</span></div>
+        <div class="scale-lbl">e-invoices /yr<br>processed on OCI KSA</div>
+      </div>
+      <div class="scale-divider"></div>
+      <div class="scale-stat">
+        <div class="scale-num">99.9<span class="m">%</span></div>
+        <div class="scale-lbl">Platform availability<br>against LHDN endpoint</div>
+      </div>
+      <div class="scale-divider"></div>
+      <div class="scale-stat">
+        <div class="scale-num">99<span class="m">%</span></div>
+        <div class="scale-lbl">First-time validation<br>at SunLife Malaysia</div>
+      </div>
+      <div class="scale-divider"></div>
+      <div class="scale-stat">
+        <div class="scale-num">2K<span class="m">+</span></div>
+        <div class="scale-lbl">Live integrations<br>across enterprise customers</div>
+      </div>
+      <div class="scale-divider"></div>
+      <div class="scale-stat">
+        <div class="scale-num">10<span class="m">+</span></div>
+        <div class="scale-lbl">Countries live<br>(France, UAE, KSA, MY +)</div>
+      </div>
+    </div>
+
+    <!-- Compliance badges -->
+    <div class="badges-row">
+      <div class="cred-badge">🔒 ISO 27001</div>
+      <div class="cred-badge">📋 SOC 2 Type II</div>
+      <div class="cred-badge">🛡 ISO 22301 (BCM)</div>
+      <div class="cred-badge">🇫🇷 PDP-registered (France)</div>
+      <div class="cred-badge">🇦🇪 FTA-accredited (UAE)</div>
+      <div class="cred-badge">🇸🇦 ZATCA Phase 2 live (KSA)</div>
+      <div class="cred-badge">🇲🇾 LHDN MyInvois live (MY)</div>
+    </div>
+  </div>
+</section>
 
 
-<h2>Reference — every step, every code</h2>
+<!-- ============================================================
+     STAGE
+============================================================ -->
+<section class="stage">
 
-<div class="ref-grid">
-  <div class="ref-card">
-    <h3>Message flow — all 12 steps</h3>
-    <table class="ref">
-      <thead><tr><th>#</th><th>Message</th><th>Route</th><th>Document / Protocol</th><th>Timing</th></tr></thead>
-      <tbody>
-        <tr><td>1</td><td>submitInvoice()</td><td>C1 → C2</td><td>REST</td><td>Sync</td></tr>
-        <tr><td>2</td><td>SMP lookup, SBD wrap, sign</td><td>C2 internal</td><td>—</td><td>Sync</td></tr>
-        <tr><td>3</td><td>TDD submit (sender side)</td><td><strong>C2 → C5</strong></td><td>TDD (function = submit)</td><td>≤ 15 min</td></tr>
-        <tr><td>4</td><td>AS4 message (Peppol Invoice)</td><td>C2 → C3</td><td>AS4</td><td>Sync</td></tr>
-        <tr><td>5</td><td>AS4 response (receipt)</td><td>C3 → C2</td><td>AS4</td><td>Immed.</td></tr>
-        <tr><td>6</td><td>MLS = AB (Acknowledged)</td><td>C3 → C2</td><td>AS4</td><td>Async</td></tr>
-        <tr><td>7</td><td>Validate (schema + business rules)</td><td>C3 internal</td><td>—</td><td>—</td></tr>
-        <tr><td>8</td><td><em>Happy path:</em> TDD submit (receiver side)</td><td><strong>C3 → C5</strong></td><td>TDD (function = submit)</td><td>≤ 15 min</td></tr>
-        <tr><td>9</td><td><em>Happy path:</em> deliverInvoice()</td><td>C3 → C4</td><td>Custom</td><td>Async</td></tr>
-        <tr><td>10</td><td><em>Happy path:</em> MLS = AP</td><td>C3 → C2</td><td>AS4</td><td>Async</td></tr>
-        <tr><td>11</td><td><em>Reject path:</em> MLS = RE + TDS to C5</td><td>C3 → C2 (MLS) + C3 → C5 (TDS)</td><td>AS4 + TDS</td><td>Async</td></tr>
-        <tr><td>12</td><td><em>Reject path:</em> TDD withdraw — close the original</td><td><strong>C2 → C5</strong></td><td>TDD (function = withdraw)</td><td>After RE</td></tr>
-      </tbody>
-    </table>
-    <p style="font-size:11.5px;color:var(--grey);margin-top:10px;">TDS (Tax Data Status, TDT-006 = 'F') is the document type used when validation fails — distinct from a normal TDD. Used only on the rejection path.</p>
+  <!-- Controls -->
+  <div class="controls">
+    <button class="btn secondary" id="btn-prev">◀ Previous</button>
+    <button class="btn primary" id="btn-next">Next Step ▶</button>
+    <div class="step-counter">Step <span class="num"><span id="step-num">1</span> / 12</span></div>
+    <div style="flex:1;"></div>
+    <button class="btn secondary" id="btn-reset">↺ Reset</button>
   </div>
 
-  <div class="ref-card">
-    <h3>MLS — Application Response codes</h3>
-    <table class="ref">
-      <thead><tr><th>Code</th><th>Status</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><span class="code amber">AB</span></td><td>Acknowledged</td><td>Receiver AP has the message; processing in progress.</td></tr>
-        <tr><td><span class="code green">AP</span></td><td>Accepted</td><td>Validated and delivered to C4.</td></tr>
-        <tr><td><span class="code red">RE</span></td><td>Rejected</td><td>Validation failed. Carries a reason code. <strong>Also reported to C5.</strong></td></tr>
-      </tbody>
-    </table>
-    <h3 style="margin-top:14px;">MLS — Status reason codes</h3>
-    <table class="ref">
-      <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
-      <tbody>
-        <tr><td><span class="code">SV</span></td><td>Schema validation failure (XSD)</td></tr>
-        <tr><td><span class="code">BV</span></td><td>Business validation failure (Schematron)</td></tr>
-        <tr><td><span class="code">DL</span></td><td>Delivered to C4</td></tr>
-        <tr><td><span class="code">DF</span></td><td>Delivery failed (could not reach C4)</td></tr>
-        <tr><td><span class="code">NR</span></td><td>Not routable (no valid endpoint)</td></tr>
-      </tbody>
-    </table>
-    <p style="font-size:11.5px;color:var(--grey);margin-top:10px;">Multiple MLS messages can be sent for the same invoice — typical sequence is <span class="code amber">AB</span> first, then <span class="code green">AP</span>+<span class="code">DL</span> on success or <span class="code red">RE</span>+<span class="code">SV</span>/<span class="code">BV</span> on failure.</p>
+  <!-- Two-column workspace -->
+  <div class="workspace">
+
+    <!-- LEFT: Diagram + active message -->
+    <div class="diagram-panel">
+      <div class="diagram-title">The 5 Corners</div>
+      <div class="corners-grid">
+        <div class="corner" id="corner-c1">
+          <div class="corner-pulse"></div>
+          <div class="corner-code">C1</div>
+          <div class="corner-letter">📤</div>
+          <div class="corner-name">Supplier</div>
+          <div class="corner-sub">Bank · insurer · ERP</div>
+        </div>
+        <div class="corner cleartax" id="corner-c2">
+          <div class="we-label">CLEARTAX</div>
+          <div class="corner-pulse"></div>
+          <div class="corner-code">C2</div>
+          <div class="corner-letter">🛡</div>
+          <div class="corner-name">Sender Access Point</div>
+          <div class="corner-sub">Validate · sign · route</div>
+        </div>
+        <div class="corner" id="corner-c3">
+          <div class="corner-pulse"></div>
+          <div class="corner-code">C3</div>
+          <div class="corner-letter">📥</div>
+          <div class="corner-name">Receiver Access Point</div>
+          <div class="corner-sub">Buyer's provider</div>
+        </div>
+        <div class="corner" id="corner-c4">
+          <div class="corner-pulse"></div>
+          <div class="corner-code">C4</div>
+          <div class="corner-letter">🏢</div>
+          <div class="corner-name">Buyer</div>
+          <div class="corner-sub">Customer · vendor</div>
+        </div>
+        <div class="corner tax" id="corner-c5">
+          <div class="corner-pulse"></div>
+          <div class="corner-code">C5</div>
+          <div class="corner-letter">🏛</div>
+          <div class="corner-name">FTA</div>
+          <div class="corner-sub">Tax authority</div>
+        </div>
+      </div>
+
+      <!-- Active message bus -->
+      <div class="message-bus">
+        <div class="message-bus-title">▼ This step's message</div>
+        <div class="message-row">
+          <div class="msg-from-to" id="msg-route">C1 <span class="arrow">→</span> C2</div>
+          <div class="msg-name" id="msg-name"><code>submitInvoice()</code></div>
+          <div class="msg-meta" id="msg-meta">REST · sync</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- RIGHT: Narrative -->
+    <div class="narrative">
+      <div class="narrative-card hero-step">
+        <div class="step-num-bubble" id="cap-num">1</div>
+        <h3 class="step-title" id="cap-title">Your system sends the invoice to ClearTax</h3>
+        <div class="step-meta" id="cap-meta">Actors: C1 → C2  ·  Protocol: REST  ·  Timing: synchronous</div>
+      </div>
+
+      <div class="section-card section-explain">
+        <h4>📍 What's happening</h4>
+        <p id="cap-explain">Your ERP, core banking system or accounting tool sends the raw invoice data to ClearTax over a REST API. Just the data — no PINT-AE formatting required from your side.</p>
+      </div>
+
+      <div class="section-card section-cleartax">
+        <h4>✨ What ClearTax handles for you</h4>
+        <ul id="cap-handles">
+          <li>Pre-built adapters for SAP, Oracle, Finacle, FLEXCUBE, T24, Guidewire, Sapiens — your IT team doesn't write integration code.</li>
+          <li>SFTP over TLS 1.2 fallback if the bank's security team won't approve a public REST endpoint.</li>
+          <li>Format-agnostic ingestion — XML, CSV, JSON, even Excel.</li>
+        </ul>
+      </div>
+
+      <div class="section-card section-prevents">
+        <h4>⚠ Without us, this is where you'd lose months</h4>
+        <p id="cap-prevents">Building and maintaining ASP-grade integration code into every ERP your business uses, plus retesting every time the regulator updates a field.</p>
+      </div>
+    </div>
+
   </div>
-</div>
 
-<div class="ref-grid" style="margin-top:18px;">
-  <div class="ref-card">
-    <h3>UAE-specific timing</h3>
-    <table class="ref">
-      <thead><tr><th>Event</th><th>Window</th></tr></thead>
-      <tbody>
-        <tr><td>C2 → C5 TDD report</td><td>≤ 15 minutes from invoice timestamp</td></tr>
-        <tr><td>C3 → C5 TDD report (post-validation)</td><td>≤ 15 minutes</td></tr>
-        <tr><td>C3 → C2 MLS = AB</td><td>Immediate (acknowledgement)</td></tr>
-        <tr><td>C3 → C2 MLS = AP / RE</td><td>Async; after validation completes</td></tr>
-        <tr><td>RE handling (withdraw + correct + resubmit)</td><td>Before VAT-period close</td></tr>
-        <tr><td>Cancellation post-AP</td><td>Credit note linked to original</td></tr>
-      </tbody>
-    </table>
+  <!-- Timeline -->
+  <div class="timeline-bar">
+    <div class="timeline-title">▾ All 12 steps · click any dot to jump</div>
+    <div class="timeline-track">
+      <div class="timeline-line"></div>
+      <div class="timeline-progress" id="timeline-progress" style="width:8.3%"></div>
+      <div class="timeline-dots" id="timeline-dots"></div>
+    </div>
   </div>
-  <div class="ref-card">
-    <h3>Retries at scale — what we run</h3>
-    <table class="ref">
-      <thead><tr><th>Failure</th><th>Behaviour</th></tr></thead>
-      <tbody>
-        <tr><td>C3 unreachable on AS4 send</td><td>Exponential backoff: 1m → 5m → 30m → 4h, then dead-letter + ops-paged.</td></tr>
-        <tr><td>MLS not received within SLA</td><td>C2 polls; escalate as NOT_DELIVERED if still pending after threshold.</td></tr>
-        <tr><td>Orphan / in-flight envelopes</td><td>Hourly reconciliation worker sweeps to catch silent losses.</td></tr>
-        <tr><td>C5 reporting failure</td><td>Independent retry queue with circuit-breaker; ops-paged on sustained failure.</td></tr>
-      </tbody>
-    </table>
+
+</section>
+
+
+<!-- ============================================================
+     REFERENCE
+============================================================ -->
+<section class="reference">
+  <details class="ref-section" open>
+    <summary>📖 Quick reference — codes, timing, retries</summary>
+    <div class="ref-section-body">
+      <h3>MLS — Application Response codes</h3>
+      <table class="ref">
+        <thead><tr><th>Code</th><th>Status</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><span class="code amber">AB</span></td><td>Acknowledged</td><td>Receiver AP got the message; processing in progress.</td></tr>
+          <tr><td><span class="code green">AP</span></td><td>Accepted</td><td>Validated and delivered to the buyer.</td></tr>
+          <tr><td><span class="code red">RE</span></td><td>Rejected</td><td>Validation failed. Carries a structured reason code. <strong>Also reported to C5.</strong></td></tr>
+        </tbody>
+      </table>
+
+      <h3>MLS — Status reason codes</h3>
+      <table class="ref">
+        <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+        <tbody>
+          <tr><td><span class="code">SV</span></td><td>Schema validation failure (XSD)</td></tr>
+          <tr><td><span class="code">BV</span></td><td>Business validation failure (Schematron)</td></tr>
+          <tr><td><span class="code">DL</span></td><td>Delivered to C4</td></tr>
+          <tr><td><span class="code">DF</span></td><td>Delivery failed (could not reach C4)</td></tr>
+          <tr><td><span class="code">NR</span></td><td>Not routable (no valid endpoint)</td></tr>
+        </tbody>
+      </table>
+
+      <h3>TDD — three management functions per the official Peppol UAE TDD spec</h3>
+      <table class="ref">
+        <thead><tr><th>Function</th><th>When</th></tr></thead>
+        <tbody>
+          <tr><td><span class="code purple">submit</span></td><td>Original report from C2 (sender) and C3 (receiver) to C5.</td></tr>
+          <tr><td><span class="code purple">replace</span></td><td>Corrected version supersedes a previous TDD.</td></tr>
+          <tr><td><span class="code purple">withdraw</span></td><td>Closes a previous TDD — used after RE to invalidate the original positive sender-side report.</td></tr>
+        </tbody>
+      </table>
+
+      <h3>UAE-specific timing</h3>
+      <table class="ref">
+        <thead><tr><th>Event</th><th>Window</th></tr></thead>
+        <tbody>
+          <tr><td>C2 → C5 TDD report (sender)</td><td>≤ 15 minutes from invoice timestamp</td></tr>
+          <tr><td>C3 → C5 TDD report (receiver)</td><td>≤ 15 minutes post-validation</td></tr>
+          <tr><td>C3 → C2 MLS = AB</td><td>Immediate (acknowledgement)</td></tr>
+          <tr><td>C3 → C2 MLS = AP / RE</td><td>Async; after validation completes</td></tr>
+          <tr><td>RE handling (withdraw + correct + resubmit)</td><td>Before VAT-period close</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <details class="ref-section">
+    <summary>⚙️ How ClearTax handles failures (retries at scale)</summary>
+    <div class="ref-section-body">
+      <table class="ref">
+        <thead><tr><th>Failure mode</th><th>What we do</th></tr></thead>
+        <tbody>
+          <tr><td>C3 unreachable on AS4 send</td><td>Exponential backoff: 1m → 5m → 30m → 4h, then dead-letter + ops-paged.</td></tr>
+          <tr><td>MLS not received within SLA</td><td>C2 polls C3; escalate as NOT_DELIVERED if still pending past threshold.</td></tr>
+          <tr><td>Orphan / in-flight envelopes</td><td>Hourly reconciliation worker sweeps to catch silent losses.</td></tr>
+          <tr><td>C5 reporting failure</td><td>Independent retry queue with circuit-breaker; ops-paged on sustained failure.</td></tr>
+          <tr><td>Validation rejection (RE)</td><td>Auto-reason-code parsing (SV/BV), surface fix suggestions, fire TDD withdraw to C5 automatically.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </details>
+
+  <div class="sources">
+    <strong>Sources:</strong>
+    <a href="https://docs.peppol.eu/tdd/ae/v1.0.1/pint-ae-tdd/bis/" target="_blank">Peppol Model for Tax Data Document v1.0.1 — Official UAE TDD spec</a> ·
+    <a href="https://docs.peppol.eu/edelivery/specs/mls/v1.0.0/mls/spec/" target="_blank">OpenPeppol MLS Specification v1.0.0</a> ·
+    <a href="https://openpeppol.atlassian.net/wiki/spaces/PAE/pages/4267835414/Peppol+UAE+DCTCE" target="_blank">Peppol UAE DCTCE — OpenPeppol Confluence</a> ·
+    <a href="https://docs.peppol.eu/poacc/billing/3.0/" target="_blank">Peppol BIS Billing 3.0</a>
   </div>
-</div>
+</section>
 
-<div class="callout">
-  <strong>Two things that catch people out vs the simpler 4-corner Peppol model:</strong> (1) In UAE DCTCE, <strong>both C2 and C3 submit TDDs to C5</strong> — sender side and receiver side, independently. (2) The TDD has three management functions: <code>submit</code>, <code>replace</code>, <code>withdraw</code>. When MLS = RE arrives, C2's earlier positive TDD at C5 has to be closed via a TDD <code>withdraw</code>. The negative outcome at C3 is reported via a TDS (Tax Data Status, TDT-006 = 'F'), not a TDD.
-</div>
-
-<div class="sources">
-  <strong>Sources:</strong>
-  <a href="https://docs.peppol.eu/tdd/ae/v1.0.1/pint-ae-tdd/bis/" target="_blank">Peppol Model for Tax Data Document v1.0.1 — Official UAE TDD Spec</a> ·
-  <a href="https://docs.peppol.eu/edelivery/specs/mls/v1.0.0/mls/spec/" target="_blank">OpenPeppol MLS Specification v1.0.0</a> ·
-  <a href="https://openpeppol.atlassian.net/wiki/spaces/PAE/pages/4267835414/Peppol+UAE+DCTCE" target="_blank">Peppol UAE DCTCE — OpenPeppol Confluence</a> ·
-  <a href="https://docs.peppol.eu/poacc/billing/3.0/" target="_blank">Peppol BIS Billing 3.0</a>
-</div>
-
-</div>
 
 <script>
-mermaid.initialize({
-  startOnLoad: false,
-  theme: "base",
-  themeVariables: {
-    primaryColor: "#1E2761",
-    primaryTextColor: "#FFFFFF",
-    primaryBorderColor: "#1E2761",
-    lineColor: "#5C6679",
-    secondaryColor: "#00A896",
-    tertiaryColor: "#FFF4D6",
-    actorBkg: "#1E2761",
-    actorBorder: "#1E2761",
-    actorTextColor: "#FFFFFF",
-    actorLineColor: "#5C6679",
-    signalColor: "#212121",
-    signalTextColor: "#212121",
-    labelBoxBkgColor: "#E6F7F4",
-    labelBoxBorderColor: "#00A896",
-    labelTextColor: "#212121",
-    noteBkgColor: "#FFF4D6",
-    noteBorderColor: "#C58A1A",
-    noteTextColor: "#212121",
-    sequenceNumberColor: "#FFFFFF",
-  },
-  sequence: { showSequenceNumbers: true, mirrorActors: false, actorMargin: 80, boxMargin: 8, messageMargin: 32 }
-});
-
 const STEPS = [
   {
-    eyebrow: "STEP 1 — INVOICE SUBMISSION",
-    title: "C1 submits invoice to C2",
-    body: "The supplier's source system (ERP, core banking, PAS, or a manual upload) hands the invoice to ClearTax — sitting at C2 — over a REST API. Synchronous call.",
-    meta: "Actors: C1 → C2  •  Protocol: REST  •  Timing: Sync",
-    msg: 'C1->>C2: submitInvoice() <br/>[REST]',
+    title: "Your system sends the invoice to ClearTax",
+    meta: "Actors: C1 → C2  ·  Protocol: REST  ·  Timing: synchronous",
+    activeCorners: ["c1","c2"],
+    msg: { route: "C1 → C2", name: "<code>submitInvoice()</code>", meta: "REST · sync" },
+    explain: "Your ERP, core banking system or accounting tool sends the raw invoice data to ClearTax over a REST API. Just the data — no PINT-AE formatting required from your side.",
+    handles: [
+      "Pre-built adapters for SAP, Oracle, Finacle, FLEXCUBE, T24, Guidewire, Sapiens — your IT team doesn't write integration code.",
+      "SFTP over TLS 1.2 fallback if the bank's security team won't approve a public REST endpoint.",
+      "Format-agnostic ingestion — XML, CSV, JSON, even Excel.",
+    ],
+    prevents: "Building and maintaining ASP-grade integration code into every ERP your business uses, plus re-testing every time the regulator updates a field.",
   },
   {
-    eyebrow: "STEP 2 — SMP LOOKUP + ENVELOPE",
-    title: "C2 prepares the Peppol envelope",
-    body: "ClearTax (C2) looks up the receiver's Access Point endpoint via the Peppol SMP, wraps the invoice in a Standard Business Document (SBD), and signs it.",
-    meta: "Actors: C2 internal  •  Protocol: SMP + signing  •  Timing: Sync (sub-second)",
-    msg: 'Note over C2: SMP lookup + SBD wrap + sign',
+    title: "ClearTax prepares the Peppol envelope",
+    meta: "Actors: C2 internal  ·  Sub-second",
+    activeCorners: ["c2"],
+    msg: { route: "C2 internal", name: "SMP lookup · SBD wrap · sign", meta: "internal · sub-second" },
+    explain: "ClearTax converts your raw invoice into a PINT-AE compliant XML, looks up the receiver's Access Point in the Peppol directory, wraps everything in a signed Standard Business Document.",
+    handles: [
+      "Full PINT-AE conversion — 687+ field schema, BFSI-specific rules (exempt/RC/self-billed) applied automatically.",
+      "SMP lookup to find the right C3 endpoint for the buyer's TRN.",
+      "Cryptographic signing with the right certificate chain, including the special chain for self-billed documents.",
+    ],
+    prevents: "Mis-routing to the wrong AP, signature mismatches, schema rejections at the receiver — all of which would land back as RE rejections in step 11.",
   },
   {
-    eyebrow: "STEP 3 — C2 → C5: TDD SUBMIT",
-    title: "C2 reports the Tax Data Document (sender side)",
-    body: "Within 15 minutes of the invoice timestamp, ClearTax submits a TDD (Tax Data Document) to C5 — the FTA's service provider. This is the sender-side report, independent of whatever happens on the receiver side. TDD has three management functions per the official spec: submit, replace, withdraw.",
-    meta: "Actors: C2 → C5  •  Document: TDD (function = submit)  •  Timing: ≤ 15 minutes",
-    msg: 'C2->>C5: TDD submit (sender) <br/>[≤ 15 min]',
+    title: "ClearTax submits the Tax Data Document to FTA",
+    meta: "Actors: C2 → C5  ·  Document: TDD (submit)  ·  Timing: ≤ 15 minutes",
+    activeCorners: ["c2","c5"],
+    msg: { route: "C2 → C5", name: "<code>TDD submit (sender)</code>", meta: "≤ 15 min · regulatory" },
+    explain: "Within 15 minutes of receiving your invoice, ClearTax reports a Tax Data Document to the FTA — your sender-side report. The FTA now knows about this invoice, independent of the buyer-side flow.",
+    handles: [
+      "Real-time TDD generation from your invoice — no batch lag, no missed window.",
+      "Independent retry queue with circuit breaker — sustained C5 outages don't drop reports.",
+      "Audit-trail entry per TDD with state, timestamp, reason code.",
+    ],
+    prevents: "Missing the 15-minute reporting window — a regulatory violation that compounds across every late invoice in your VAT cycle.",
   },
   {
-    eyebrow: "STEP 4 — PEPPOL TRANSMISSION",
-    title: "C2 → C3: AS4 Peppol message",
-    body: "ClearTax transmits the signed invoice to the buyer's Access Point (C3) over the Peppol AS4 protocol. AS4 is sent only once.",
-    meta: "Actors: C2 → C3  •  Protocol: AS4  •  Timing: Sync",
-    msg: 'C2->>C3: AS4 (Peppol Invoice)',
+    title: "ClearTax sends the invoice across Peppol",
+    meta: "Actors: C2 → C3  ·  Protocol: AS4 (encrypted, signed)",
+    activeCorners: ["c2","c3"],
+    msg: { route: "C2 → C3", name: "<code>AS4 (Peppol Invoice)</code>", meta: "AS4 · sync · encrypted" },
+    explain: "ClearTax transmits the signed PINT-AE invoice to the buyer's Access Point over the Peppol AS4 protocol — secure, signed, and tracked. AS4 is sent only once.",
+    handles: [
+      "Full AS4 stack — message-level encryption, non-repudiation, delivery guarantees.",
+      "Per-receiver routing using the SMP-resolved endpoint.",
+      "Network-level retries if the receiver AP momentarily fails.",
+    ],
+    prevents: "Lost messages, security exposure on the wire, or successful sends that the buyer's AP can't actually parse.",
   },
   {
-    eyebrow: "STEP 5 — AS4 RESPONSE",
-    title: "C3 → C2: AS4 receipt",
-    body: "C3 returns an AS4 response confirming receipt. This confirms bytes have been received — it does not yet confirm validation.",
-    meta: "Actors: C3 → C2  •  Protocol: AS4  •  Timing: Immediate",
-    msg: 'C3-->>C2: AS4 response (receipt)',
+    title: "Receiver AP confirms it got the bytes",
+    meta: "Actors: C3 → C2  ·  AS4 response",
+    activeCorners: ["c2","c3"],
+    msg: { route: "C3 → C2", name: "<code>AS4 response (receipt)</code>", meta: "AS4 · sync" },
+    explain: "The buyer's AP returns an immediate AS4 response confirming the message bytes were received. This is just a transport-level receipt — validation hasn't happened yet.",
+    handles: [
+      "Track which invoices have an AS4 receipt vs which are still in flight.",
+      "Reconciliation if the receipt doesn't arrive — the invoice is escalated for retry.",
+    ],
+    prevents: "Silent delivery failures — without this tracking you'd never know if AS4 transmission failed and assume the invoice was sent.",
   },
   {
-    eyebrow: "STEP 6 — MLS = AB",
-    title: "C3 → C2: MLS = AB (Acknowledged)",
-    body: "C3 sends the first Message Level Status: AB — Acknowledged. The invoice is now in C3's processing queue. Validation is next.",
-    meta: "Actors: C3 → C2  •  Code: AB",
-    msg: 'C3-->>C2: MLS = AB (Acknowledged)',
+    title: "First MLS arrives — AB (Acknowledged)",
+    meta: "Actors: C3 → C2  ·  MLS = AB  ·  async",
+    activeCorners: ["c2","c3"],
+    msg: { route: "C3 → C2", name: "<code>MLS = AB</code>", meta: "Acknowledged · processing" },
+    explain: "The buyer's AP sends the first Message Level Status: AB — Acknowledged. Translation: \"Got it, processing now.\" Validation is the next step.",
+    handles: [
+      "Real-time dashboard update so your team sees the invoice has reached the buyer's AP.",
+      "Alerts if AB doesn't arrive within the expected SLA.",
+      "Status pushed back to your ERP / dashboard automatically.",
+    ],
+    prevents: "Invoices stuck in limbo with you wondering whether transmission worked.",
   },
   {
-    eyebrow: "STEP 7 — VALIDATION",
-    title: "C3 validates: schema + business rules",
-    body: "C3 runs schema validation (XSD) and business-rule validation (Schematron) against the PINT-AE specification. This is where most failures surface.",
-    meta: "Actors: C3 internal  •  Reason codes if failed: SV (schema), BV (business)",
-    msg: 'Note over C3: Validate (XSD + Schematron)',
+    title: "Receiver AP runs full validation",
+    meta: "Actors: C3 internal  ·  XSD schema + Schematron business rules",
+    activeCorners: ["c3"],
+    msg: { route: "C3 internal", name: "Validate (XSD + Schematron)", meta: "internal · validation" },
+    explain: "The buyer's AP now checks the invoice against the full PINT-AE specification — schema (XSD) validation and business-rule (Schematron) validation. This is where most failures surface.",
+    handles: [
+      "We pre-validate at our side at 10,000 invoices/sec so 99% of invoices pass C3 first time.",
+      "Auto-heal common failure modes (missing tax codes, malformed BT references) before egress.",
+      "If C3's rules differ slightly, our validation library is updated centrally — no implementation work for you.",
+    ],
+    prevents: "Mass rejections at C3 that you'd only discover after batch processing — which then trigger the RE / withdraw path on every line.",
   },
   {
-    eyebrow: "STEP 8 — HAPPY PATH: C3 → C5 TDD",
-    title: "C3 reports TDD (receiver side) — validation passed",
-    body: "If validation passes, C3 submits its own TDD to C5 — within 15 minutes. Now the FTA holds two independent reports of the same invoice (one from C2 sender side, one from C3 receiver side) for cross-verification.",
-    meta: "Actors: C3 → C5  •  Document: TDD (function = submit)  •  Timing: ≤ 15 minutes",
-    msg: 'C3->>C5: TDD submit (receiver) <br/>[≤ 15 min]',
+    title: "Receiver AP reports its TDD to FTA",
+    meta: "Actors: C3 → C5  ·  Document: TDD (submit)  ·  Timing: ≤ 15 minutes",
+    activeCorners: ["c3","c5"],
+    msg: { route: "C3 → C5", name: "<code>TDD submit (receiver)</code>", meta: "≤ 15 min · regulatory" },
+    explain: "Once validation passes, the buyer's AP submits its own TDD to the FTA. The FTA now holds two independent reports of the same invoice — sender-side from us at step 3, receiver-side from C3 here. The FTA reconciles them.",
+    handles: [
+      "If ClearTax is the receiver too (inbound AP scenarios), we run this end as well — both sides on one platform.",
+      "Cross-side reconciliation visibility — you see if the buyer's report has landed.",
+    ],
+    prevents: "Mismatched sender/receiver TDDs at C5 — would otherwise trigger FTA reconciliation queries on your filing.",
   },
   {
-    eyebrow: "STEP 9 — HAPPY PATH: DELIVER TO BUYER",
-    title: "C3 → C4: deliverInvoice()",
-    body: "C3 hands the validated invoice to the buyer (C4) — typically into the buyer's ERP or AP system. The protocol here is per-buyer (custom), not Peppol.",
-    meta: "Actors: C3 → C4  •  Protocol: Custom (REST / SFTP / file)  •  Timing: Async",
-    msg: 'C3->>C4: deliverInvoice()',
+    title: "Buyer receives the invoice",
+    meta: "Actors: C3 → C4  ·  Custom protocol per buyer",
+    activeCorners: ["c3","c4"],
+    msg: { route: "C3 → C4", name: "<code>deliverInvoice()</code>", meta: "Custom · async" },
+    explain: "The buyer's AP delivers the validated invoice into the buyer's accounting system — typically via REST, SFTP, or whatever format that buyer's IT prefers.",
+    handles: [
+      "On the inbound side, we support every common buyer delivery format — your AP doesn't have to negotiate one per supplier.",
+      "Audit-trail captures the delivery confirmation per buyer.",
+    ],
+    prevents: "Buyers complaining about format, rejecting invoices, or dropping them into manual queues.",
   },
   {
-    eyebrow: "STEP 10 — HAPPY PATH: MLS = AP",
-    title: "C3 → C2: MLS = AP (Accepted)",
-    body: "On the happy path, C3 sends MLS = AP — Accepted. The invoice is fully validated and delivered. End of the lifecycle for this invoice.",
-    meta: "Actors: C3 → C2  •  Code: AP",
-    msg: 'C3-->>C2: MLS = AP (Accepted)',
+    title: "MLS = AP — invoice accepted, end of happy path",
+    meta: "Actors: C3 → C2  ·  MLS = AP",
+    activeCorners: ["c2","c3"],
+    msg: { route: "C3 → C2", name: "<code>MLS = AP</code>", meta: "Accepted · validated · delivered" },
+    explain: "The buyer's AP confirms acceptance. The invoice is fully validated, the buyer has it, the FTA has both reports. End of the lifecycle.",
+    handles: [
+      "Final state pushed to your dashboard, your ERP, your audit trail.",
+      "Immutable archive entry — every state change captured.",
+      "Customer notification if you've configured one.",
+    ],
+    prevents: "No record of completion — without our trail you'd have no defensible audit story for VAT review.",
   },
   {
-    eyebrow: "STEP 11 — REJECTION PATH: MLS = RE + TDS",
-    title: "C3 → C2: MLS = RE  •  C3 → C5: TDS (Tax Data Status)",
-    body: "If validation fails, C3 sends MLS = RE to C2 with a reason code (SV = schema, BV = business). For the negative case the spec uses a different document type: TDS (Tax Data Status, TDT-006 = 'F') instead of a normal TDD. C3 → C5 reports the failure as TDS, not TDD.",
-    meta: "Actors: C3 → C2 (MLS = RE)  +  C3 → C5 (TDS, function = submit)",
-    msg: 'C3-->>C2: MLS = RE + SV/BV (Rejected) <br/>C3->>C5: TDS (failed validation)',
+    title: "REJECTION PATH — MLS = RE + TDS to FTA",
+    meta: "Actors: C3 → C2 (MLS=RE)  +  C3 → C5 (TDS)",
+    activeCorners: ["c2","c3","c5"],
+    msg: { route: "C3 → C2 + C5", name: "<code>MLS = RE</code> + <code>TDS</code>", meta: "Rejected · also reported to FTA" },
+    explain: "If validation fails, the buyer's AP returns MLS = RE with a reason code (SV = schema, BV = business). It also reports the failure to the FTA as a TDS (Tax Data Status), distinct from a TDD — so the FTA sees the negative outcome too.",
+    handles: [
+      "Auto-reason-code parsing — your team gets a plain-English error and a suggested fix.",
+      "Re-validation pre-check before resubmit — don't re-trip the same rule twice.",
+      "Failure metrics surfaced on dashboards so quality issues get caught at source.",
+    ],
+    prevents: "Hours of manual debugging on rejected invoices — multiplied by every line item your batch generates.",
   },
   {
-    eyebrow: "STEP 12 — REJECTION PATH: C2 WITHDRAW",
-    title: "C2 → C5: TDD withdraw — close the original",
-    body: "Critical step: because C2 already submitted a positive TDD at step 3, that report at C5 is now stale. C2 sends a TDD withdraw (or replace, if a corrected version is going to be resubmitted) to C5 to close the original. This is what the official Peppol spec means by TDD's three functions: submit / replace / withdraw.",
-    meta: "Actors: C2 → C5  •  Document: TDD (function = withdraw)  •  Closes the loop after RE",
-    msg: 'C2->>C5: TDD withdraw <br/>(close original sender-side TDD)',
+    title: "Closing the loop — TDD withdraw to FTA",
+    meta: "Actors: C2 → C5  ·  Document: TDD (withdraw)",
+    activeCorners: ["c2","c5"],
+    msg: { route: "C2 → C5", name: "<code>TDD withdraw</code>", meta: "closes original sender-side TDD" },
+    explain: "Critical step missed by lighter ASPs: because we already submitted a positive TDD at step 3, that report is now stale after rejection. ClearTax automatically fires a TDD withdraw to C5 — closing the original. The FTA's records stay consistent.",
+    handles: [
+      "Automatic detection of RE arrival → triggers TDD withdraw without any manual intervention.",
+      "Or — if you're resubmitting a corrected version — TDD replace instead, linking the new TDD to the old.",
+      "Audit-trail captures the close-out with full reason chain.",
+    ],
+    prevents: "Stale positive reports at the FTA contradicting actual outcomes — a regulatory inconsistency that surfaces months later in VAT-period reviews.",
   },
 ];
 
 let currentStep = 1;
 
-function buildMermaidSource(uptoStep) {
-  let lines = [
-    'sequenceDiagram',
-    '  participant C1 as C1<br/>Supplier',
-    '  participant C2 as C2<br/>ClearTax',
-    '  participant C3 as C3<br/>Receiver AP',
-    '  participant C4 as C4<br/>Buyer',
-    '  participant C5 as C5<br/>FTA',
-    ''
-  ];
-  for (let i = 0; i < uptoStep; i++) {
-    const isCurrent = (i === uptoStep - 1);
-    const m = STEPS[i].msg;
-    // Apply rect highlight on the current step
-    if (isCurrent) {
-      lines.push(`  rect rgb(230, 247, 244)`);
-      lines.push(`    ${m}`);
-      lines.push(`  end`);
-    } else {
-      lines.push(`  ${m}`);
-    }
-  }
-  return lines.join('\n');
-}
+const corners = ["c1","c2","c3","c4","c5"];
+const elCorners = Object.fromEntries(corners.map(c => [c, document.getElementById("corner-" + c)]));
+const elStepNum = document.getElementById("step-num");
+const elCapNum = document.getElementById("cap-num");
+const elCapTitle = document.getElementById("cap-title");
+const elCapMeta = document.getElementById("cap-meta");
+const elCapExplain = document.getElementById("cap-explain");
+const elCapHandles = document.getElementById("cap-handles");
+const elCapPrevents = document.getElementById("cap-prevents");
+const elMsgRoute = document.getElementById("msg-route");
+const elMsgName = document.getElementById("msg-name");
+const elMsgMeta = document.getElementById("msg-meta");
+const elTimelineDots = document.getElementById("timeline-dots");
+const elTimelineProgress = document.getElementById("timeline-progress");
 
-async function renderStep() {
-  const total = STEPS.length;
-  document.getElementById('step-num').textContent = currentStep;
-  document.getElementById('step-total').textContent = total;
+// build timeline dots
+STEPS.forEach((s, i) => {
+  const d = document.createElement("div");
+  d.className = "t-dot";
+  d.dataset.step = String(i + 1);
+  d.innerHTML = '<div class="t-dot-circle">' + (i + 1) + '</div>';
+  d.addEventListener("click", () => { currentStep = i + 1; render(); });
+  elTimelineDots.appendChild(d);
+});
+
+function render() {
   const s = STEPS[currentStep - 1];
-  document.getElementById('cap-eyebrow').textContent = s.eyebrow;
-  document.getElementById('cap-title').textContent = s.title;
-  document.getElementById('cap-body').textContent = s.body;
-  document.getElementById('cap-meta').textContent = s.meta;
+  // step number
+  elStepNum.textContent = currentStep;
+  elCapNum.textContent = currentStep;
+  elCapTitle.textContent = s.title;
+  elCapMeta.textContent = s.meta;
+  elCapExplain.textContent = s.explain;
+  elMsgRoute.innerHTML = s.msg.route.replace("→", '<span class="arrow">→</span>').replace("+", '<span class="arrow">+</span>');
+  elMsgName.innerHTML = s.msg.name;
+  elMsgMeta.textContent = s.msg.meta;
+  elCapPrevents.textContent = s.prevents;
+  elCapHandles.innerHTML = s.handles.map(h => "<li>" + h + "</li>").join("");
 
-  const src = buildMermaidSource(currentStep);
-  const el = document.getElementById('diagram');
-  el.removeAttribute('data-processed');
-  el.innerHTML = src;
-  try {
-    const { svg } = await mermaid.render('seq-' + Date.now(), src);
-    el.innerHTML = svg;
-  } catch (e) {
-    el.textContent = 'Diagram render error: ' + e.message;
-  }
+  // active corners
+  corners.forEach(c => {
+    const el = elCorners[c];
+    if (s.activeCorners.includes(c)) el.classList.add("active");
+    else el.classList.remove("active");
+  });
 
-  document.getElementById('btn-prev').disabled = (currentStep <= 1);
-  document.getElementById('btn-next').disabled = (currentStep >= total);
+  // timeline dots
+  document.querySelectorAll(".t-dot").forEach((d, i) => {
+    d.classList.remove("active", "done");
+    if (i + 1 < currentStep) d.classList.add("done");
+    if (i + 1 === currentStep) d.classList.add("active");
+  });
+  elTimelineProgress.style.width = ((currentStep - 1) / (STEPS.length - 1) * 100) + "%";
+
+  // button states
+  document.getElementById("btn-prev").disabled = (currentStep <= 1);
+  document.getElementById("btn-next").disabled = (currentStep >= STEPS.length);
 }
 
-document.getElementById('btn-prev').addEventListener('click', () => {
-  if (currentStep > 1) { currentStep--; renderStep(); }
-});
-document.getElementById('btn-next').addEventListener('click', () => {
-  if (currentStep < STEPS.length) { currentStep++; renderStep(); }
-});
-document.getElementById('btn-reset').addEventListener('click', () => {
-  currentStep = 1; renderStep();
-});
-document.getElementById('btn-all').addEventListener('click', () => {
-  currentStep = STEPS.length; renderStep();
+document.getElementById("btn-prev").addEventListener("click", () => { if (currentStep > 1) { currentStep--; render(); } });
+document.getElementById("btn-next").addEventListener("click", () => { if (currentStep < STEPS.length) { currentStep++; render(); } });
+document.getElementById("btn-reset").addEventListener("click", () => { currentStep = 1; render(); });
+
+// keyboard nav
+document.addEventListener("keydown", (e) => {
+  if (e.key === "ArrowRight" || e.key === " ") { if (currentStep < STEPS.length) { currentStep++; render(); } }
+  if (e.key === "ArrowLeft") { if (currentStep > 1) { currentStep--; render(); } }
 });
 
-renderStep();
+render();
 </script>
 </body>
 </html>
