@@ -159,22 +159,23 @@ table.ref th { background: var(--navy); color: var(--white); font-size: 11.5px; 
   <div class="ref-card">
     <h3>Message flow — all 12 steps</h3>
     <table class="ref">
-      <thead><tr><th>#</th><th>Message</th><th>Route</th><th>Protocol</th><th>Timing</th></tr></thead>
+      <thead><tr><th>#</th><th>Message</th><th>Route</th><th>Document / Protocol</th><th>Timing</th></tr></thead>
       <tbody>
         <tr><td>1</td><td>submitInvoice()</td><td>C1 → C2</td><td>REST</td><td>Sync</td></tr>
         <tr><td>2</td><td>SMP lookup, SBD wrap, sign</td><td>C2 internal</td><td>—</td><td>Sync</td></tr>
-        <tr><td>3</td><td>Report TDD (sender side)</td><td><strong>C2 → C5</strong></td><td>FTA API</td><td>≤ 15 min</td></tr>
+        <tr><td>3</td><td>TDD submit (sender side)</td><td><strong>C2 → C5</strong></td><td>TDD (function = submit)</td><td>≤ 15 min</td></tr>
         <tr><td>4</td><td>AS4 message (Peppol Invoice)</td><td>C2 → C3</td><td>AS4</td><td>Sync</td></tr>
         <tr><td>5</td><td>AS4 response (receipt)</td><td>C3 → C2</td><td>AS4</td><td>Immed.</td></tr>
         <tr><td>6</td><td>MLS = AB (Acknowledged)</td><td>C3 → C2</td><td>AS4</td><td>Async</td></tr>
         <tr><td>7</td><td>Validate (schema + business rules)</td><td>C3 internal</td><td>—</td><td>—</td></tr>
-        <tr><td>8</td><td>Report TDD (receiver side)</td><td><strong>C3 → C5</strong></td><td>FTA API</td><td>≤ 15 min</td></tr>
-        <tr><td>9</td><td>deliverInvoice()</td><td>C3 → C4</td><td>Custom</td><td>Async</td></tr>
-        <tr><td>10</td><td>MLS = AP (Accepted)</td><td>C3 → C2</td><td>AS4</td><td>Async</td></tr>
-        <tr><td>11</td><td>MLS = RE + reason — if rejected, also to C5</td><td>C3 → C2 + C5</td><td>AS4 / FTA API</td><td>Async</td></tr>
-        <tr><td>12</td><td>IMR (business response)</td><td>C4 → C1</td><td>BIS</td><td>Optional, days</td></tr>
+        <tr><td>8</td><td><em>Happy path:</em> TDD submit (receiver side)</td><td><strong>C3 → C5</strong></td><td>TDD (function = submit)</td><td>≤ 15 min</td></tr>
+        <tr><td>9</td><td><em>Happy path:</em> deliverInvoice()</td><td>C3 → C4</td><td>Custom</td><td>Async</td></tr>
+        <tr><td>10</td><td><em>Happy path:</em> MLS = AP</td><td>C3 → C2</td><td>AS4</td><td>Async</td></tr>
+        <tr><td>11</td><td><em>Reject path:</em> MLS = RE + TDS to C5</td><td>C3 → C2 (MLS) + C3 → C5 (TDS)</td><td>AS4 + TDS</td><td>Async</td></tr>
+        <tr><td>12</td><td><em>Reject path:</em> TDD withdraw — close the original</td><td><strong>C2 → C5</strong></td><td>TDD (function = withdraw)</td><td>After RE</td></tr>
       </tbody>
     </table>
+    <p style="font-size:11.5px;color:var(--grey);margin-top:10px;">TDS (Tax Data Status, TDT-006 = 'F') is the document type used when validation fails — distinct from a normal TDD. Used only on the rejection path.</p>
   </div>
 
   <div class="ref-card">
@@ -232,16 +233,15 @@ table.ref th { background: var(--navy); color: var(--white); font-size: 11.5px; 
 </div>
 
 <div class="callout">
-  <strong>Key correction vs the simpler 4-corner Peppol model:</strong> in UAE DCTCE, both C2 and C3 report Tax Data Documents to C5. C2 reports the outbound invoice; C3 reports the validated invoice. If validation fails, C3 sends a <span class="code red">RE</span> MLS to C2 <em>and</em> reports the negative outcome to C5. This dual-reporting is what gives the FTA independent visibility on both sides of every transaction.
+  <strong>Two things that catch people out vs the simpler 4-corner Peppol model:</strong> (1) In UAE DCTCE, <strong>both C2 and C3 submit TDDs to C5</strong> — sender side and receiver side, independently. (2) The TDD has three management functions: <code>submit</code>, <code>replace</code>, <code>withdraw</code>. When MLS = RE arrives, C2's earlier positive TDD at C5 has to be closed via a TDD <code>withdraw</code>. The negative outcome at C3 is reported via a TDS (Tax Data Status, TDT-006 = 'F'), not a TDD.
 </div>
 
 <div class="sources">
   <strong>Sources:</strong>
+  <a href="https://docs.peppol.eu/tdd/ae/v1.0.1/pint-ae-tdd/bis/" target="_blank">Peppol Model for Tax Data Document v1.0.1 — Official UAE TDD Spec</a> ·
   <a href="https://docs.peppol.eu/edelivery/specs/mls/v1.0.0/mls/spec/" target="_blank">OpenPeppol MLS Specification v1.0.0</a> ·
   <a href="https://openpeppol.atlassian.net/wiki/spaces/PAE/pages/4267835414/Peppol+UAE+DCTCE" target="_blank">Peppol UAE DCTCE — OpenPeppol Confluence</a> ·
-  <a href="https://docs.peppol.eu/poacc/billing/3.0/" target="_blank">Peppol BIS Billing 3.0</a> ·
-  <a href="https://www.vatupdate.com/2025/07/11/understanding-message-level-status-mls-in-uae-e-invoicing-peppol-framework-and-business-impact/" target="_blank">Understanding MLS in UAE — VATupdate</a> ·
-  <a href="https://orchidatax.com/uae-einvoicing-dctce-compliance-guide/" target="_blank">UAE E-Invoicing DCTCE & PINT-AE — Orchidatax</a>
+  <a href="https://docs.peppol.eu/poacc/billing/3.0/" target="_blank">Peppol BIS Billing 3.0</a>
 </div>
 
 </div>
@@ -290,11 +290,11 @@ const STEPS = [
     msg: 'Note over C2: SMP lookup + SBD wrap + sign',
   },
   {
-    eyebrow: "STEP 3 — C2 REPORTS TO C5",
-    title: "C2 → C5: Tax Data Document (sender-side)",
-    body: "Within 15 minutes of the invoice timestamp, ClearTax reports the Tax Data Document (TDD) to the FTA at C5. This is the sender-side reporting — independent of whatever happens on the receiver side.",
-    meta: "Actors: C2 → C5  •  Protocol: FTA API  •  Timing: ≤ 15 minutes",
-    msg: 'C2->>C5: Report TDD (sender) <br/>[≤ 15 min]',
+    eyebrow: "STEP 3 — C2 → C5: TDD SUBMIT",
+    title: "C2 reports the Tax Data Document (sender side)",
+    body: "Within 15 minutes of the invoice timestamp, ClearTax submits a TDD (Tax Data Document) to C5 — the FTA's service provider. This is the sender-side report, independent of whatever happens on the receiver side. TDD has three management functions per the official spec: submit, replace, withdraw.",
+    meta: "Actors: C2 → C5  •  Document: TDD (function = submit)  •  Timing: ≤ 15 minutes",
+    msg: 'C2->>C5: TDD submit (sender) <br/>[≤ 15 min]',
   },
   {
     eyebrow: "STEP 4 — PEPPOL TRANSMISSION",
@@ -314,50 +314,50 @@ const STEPS = [
     eyebrow: "STEP 6 — MLS = AB",
     title: "C3 → C2: MLS = AB (Acknowledged)",
     body: "C3 sends the first Message Level Status: AB — Acknowledged. The invoice is now in C3's processing queue. Validation is next.",
-    meta: "Actors: C3 → C2  •  Protocol: AS4 (MLS)  •  Code: AB",
+    meta: "Actors: C3 → C2  •  Code: AB",
     msg: 'C3-->>C2: MLS = AB (Acknowledged)',
   },
   {
     eyebrow: "STEP 7 — VALIDATION",
     title: "C3 validates: schema + business rules",
     body: "C3 runs schema validation (XSD) and business-rule validation (Schematron) against the PINT-AE specification. This is where most failures surface.",
-    meta: "Actors: C3 internal  •  Protocol: XSD + Schematron  •  Reason codes: SV (schema), BV (business)",
+    meta: "Actors: C3 internal  •  Reason codes if failed: SV (schema), BV (business)",
     msg: 'Note over C3: Validate (XSD + Schematron)',
   },
   {
-    eyebrow: "STEP 8 — C3 REPORTS TO C5",
-    title: "C3 → C5: Tax Data Document (receiver-side)",
-    body: "Once validation passes, C3 reports its own Tax Data Document to the FTA at C5 — within 15 minutes. Now the FTA holds two independent reports of the same invoice (one from C2, one from C3) for cross-verification.",
-    meta: "Actors: C3 → C5  •  Protocol: FTA API  •  Timing: ≤ 15 minutes",
-    msg: 'C3->>C5: Report TDD (receiver) <br/>[≤ 15 min]',
+    eyebrow: "STEP 8 — HAPPY PATH: C3 → C5 TDD",
+    title: "C3 reports TDD (receiver side) — validation passed",
+    body: "If validation passes, C3 submits its own TDD to C5 — within 15 minutes. Now the FTA holds two independent reports of the same invoice (one from C2 sender side, one from C3 receiver side) for cross-verification.",
+    meta: "Actors: C3 → C5  •  Document: TDD (function = submit)  •  Timing: ≤ 15 minutes",
+    msg: 'C3->>C5: TDD submit (receiver) <br/>[≤ 15 min]',
   },
   {
-    eyebrow: "STEP 9 — DELIVERY TO BUYER",
+    eyebrow: "STEP 9 — HAPPY PATH: DELIVER TO BUYER",
     title: "C3 → C4: deliverInvoice()",
     body: "C3 hands the validated invoice to the buyer (C4) — typically into the buyer's ERP or AP system. The protocol here is per-buyer (custom), not Peppol.",
     meta: "Actors: C3 → C4  •  Protocol: Custom (REST / SFTP / file)  •  Timing: Async",
     msg: 'C3->>C4: deliverInvoice()',
   },
   {
-    eyebrow: "STEP 10 — MLS = AP",
-    title: "C3 → C2: MLS = AP (Accepted) — happy path",
-    body: "On the happy path, C3 sends MLS = AP — accepted and delivered to C4. Includes reason code DL (Delivered).",
-    meta: "Actors: C3 → C2  •  Code: AP + DL",
-    msg: 'C3-->>C2: MLS = AP + DL (Accepted)',
+    eyebrow: "STEP 10 — HAPPY PATH: MLS = AP",
+    title: "C3 → C2: MLS = AP (Accepted)",
+    body: "On the happy path, C3 sends MLS = AP — Accepted. The invoice is fully validated and delivered. End of the lifecycle for this invoice.",
+    meta: "Actors: C3 → C2  •  Code: AP",
+    msg: 'C3-->>C2: MLS = AP (Accepted)',
   },
   {
-    eyebrow: "STEP 11 — MLS = RE (alternate path)",
-    title: "C3 → C2 + C5: MLS = RE (Rejected) — also reported to FTA",
-    body: "If validation fails, C3 sends MLS = RE to C2 with a reason code (SV = schema, BV = business). Crucially, the negative outcome is also reported to C5 — the FTA sees both successful and failed validations independently.",
-    meta: "Actors: C3 → C2 + C5  •  Code: RE + SV/BV",
-    msg: 'C3-->>C2: MLS = RE + SV/BV (Rejected) <br/>C3->>C5: Negative TDD',
+    eyebrow: "STEP 11 — REJECTION PATH: MLS = RE + TDS",
+    title: "C3 → C2: MLS = RE  •  C3 → C5: TDS (Tax Data Status)",
+    body: "If validation fails, C3 sends MLS = RE to C2 with a reason code (SV = schema, BV = business). For the negative case the spec uses a different document type: TDS (Tax Data Status, TDT-006 = 'F') instead of a normal TDD. C3 → C5 reports the failure as TDS, not TDD.",
+    meta: "Actors: C3 → C2 (MLS = RE)  +  C3 → C5 (TDS, function = submit)",
+    msg: 'C3-->>C2: MLS = RE + SV/BV (Rejected) <br/>C3->>C5: TDS (failed validation)',
   },
   {
-    eyebrow: "STEP 12 — OPTIONAL IMR",
-    title: "C4 → C1: IMR (business response)",
-    body: "Optionally, the buyer (C4) sends an Invoice Message Response (IMR) back to the supplier (C1) — accepted, acknowledged, or rejected at the business level. This can take days and is independent of the technical MLS flow.",
-    meta: "Actors: C4 → C1  •  Protocol: BIS  •  Timing: Optional, days",
-    msg: 'C4-->>C1: IMR (business response, optional)',
+    eyebrow: "STEP 12 — REJECTION PATH: C2 WITHDRAW",
+    title: "C2 → C5: TDD withdraw — close the original",
+    body: "Critical step: because C2 already submitted a positive TDD at step 3, that report at C5 is now stale. C2 sends a TDD withdraw (or replace, if a corrected version is going to be resubmitted) to C5 to close the original. This is what the official Peppol spec means by TDD's three functions: submit / replace / withdraw.",
+    meta: "Actors: C2 → C5  •  Document: TDD (function = withdraw)  •  Closes the loop after RE",
+    msg: 'C2->>C5: TDD withdraw <br/>(close original sender-side TDD)',
   },
 ];
 
