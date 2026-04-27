@@ -1,0 +1,432 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>ClearTax — UAE Peppol DCTCE 5-Corner (C5) Flow</title>
+<script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.1/dist/mermaid.min.js"></script>
+<style>
+:root {
+  --navy: #1E2761;
+  --navy-deep: #151A45;
+  --ice: #CADCFC;
+  --teal: #00A896;
+  --teal-soft: #E6F7F4;
+  --coral: #F96167;
+  --warning: #FFF4D6;
+  --warning-border: #C58A1A;
+  --sand: #F5F2EB;
+  --grey: #5C6679;
+  --grey-light: #DDDDDD;
+  --black: #212121;
+  --white: #FFFFFF;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Calibri, "Helvetica Neue", Arial, sans-serif;
+  font-size: 14px; line-height: 1.55; color: var(--black); background: #FAFAFA;
+}
+.wrap { max-width: 1200px; margin: 0 auto; padding: 32px 28px 80px; }
+header.hero {
+  background: var(--navy); color: var(--white); padding: 26px 32px; border-radius: 6px;
+  position: relative; overflow: hidden; margin-bottom: 22px;
+}
+header.hero::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 6px; background: var(--teal);
+}
+.hero-eyebrow { font-size: 11px; letter-spacing: 4px; color: var(--teal); font-weight: 700; }
+.hero-title { font-size: 28px; font-weight: 800; margin: 6px 0; line-height: 1.15; }
+.hero-sub { font-size: 13px; color: var(--ice); font-style: italic; max-width: 880px; line-height: 1.55; }
+h2 { font-size: 18px; font-weight: 700; color: var(--navy); margin: 26px 0 10px; }
+h3 { font-size: 15px; font-weight: 700; color: var(--navy); margin: 18px 0 8px; }
+
+/* Step controls bar */
+.controls {
+  display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--white);
+  border: 1px solid var(--grey-light); border-radius: 6px; margin-bottom: 18px;
+}
+.btn {
+  background: var(--navy); color: var(--white); border: 0; padding: 9px 18px;
+  font-size: 13px; font-weight: 700; border-radius: 4px; cursor: pointer;
+  letter-spacing: 0.4px;
+}
+.btn:hover { background: var(--navy-deep); }
+.btn:disabled { background: #999; cursor: not-allowed; opacity: 0.6; }
+.btn.secondary { background: var(--white); color: var(--navy); border: 1px solid var(--grey-light); }
+.btn.secondary:hover { background: var(--sand); }
+.btn.primary { background: var(--teal); }
+.btn.primary:hover { background: #007F73; }
+.step-counter { font-size: 13px; color: var(--grey); }
+.step-counter strong { color: var(--navy); font-size: 16px; }
+
+/* Caption box */
+.caption {
+  background: var(--white); border: 1px solid var(--grey-light); border-left: 4px solid var(--teal);
+  border-radius: 4px; padding: 14px 18px; margin-bottom: 18px; min-height: 64px;
+}
+.caption-eyebrow { font-size: 10px; color: var(--teal); font-weight: 700; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 4px; }
+.caption-title { font-size: 16px; font-weight: 700; color: var(--navy); margin-bottom: 4px; }
+.caption-body { font-size: 13px; color: var(--black); line-height: 1.55; }
+.caption-meta { font-size: 11px; color: var(--grey); font-style: italic; margin-top: 6px; }
+
+/* Diagram container */
+.diagram-card {
+  background: var(--white); border: 1px solid var(--grey-light); border-radius: 6px;
+  padding: 20px; overflow-x: auto; margin-bottom: 22px; min-height: 380px;
+}
+.mermaid { font-family: inherit; }
+
+/* Legend */
+.legend {
+  display: flex; gap: 22px; flex-wrap: wrap; padding: 12px 18px; background: var(--sand);
+  border-radius: 4px; margin-bottom: 22px; font-size: 11.5px;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-swatch { width: 14px; height: 14px; border-radius: 2px; }
+
+/* Reference tables */
+.ref-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+@media (max-width: 900px) { .ref-grid { grid-template-columns: 1fr; } }
+.ref-card {
+  background: var(--white); border: 1px solid var(--grey-light); border-radius: 6px;
+  padding: 16px 18px;
+}
+.ref-card h3 { margin-top: 0; font-size: 14px; }
+table.ref { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+table.ref th, table.ref td { border: 1px solid var(--grey-light); padding: 7px 10px; text-align: left; }
+table.ref th { background: var(--navy); color: var(--white); font-size: 11.5px; }
+.code { font-family: "SF Mono", Consolas, monospace; font-size: 12px; font-weight: 700; color: var(--navy); }
+.code.green { color: var(--teal); }
+.code.red { color: var(--coral); }
+.code.amber { color: var(--warning-border); }
+
+.callout {
+  background: var(--warning); border: 1px solid var(--warning-border); border-radius: 4px;
+  padding: 12px 16px; font-size: 12.5px; margin-top: 18px;
+}
+.callout strong { color: var(--warning-border); }
+
+.sources {
+  font-size: 11.5px; color: var(--grey); margin-top: 22px; padding-top: 18px; border-top: 1px solid var(--grey-light);
+}
+.sources a { color: var(--teal); text-decoration: none; }
+.sources a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+<header class="hero">
+  <div class="hero-eyebrow">UAE PEPPOL DCTCE</div>
+  <div class="hero-title">5-Corner (C5) Model — Step-by-Step Flow</div>
+  <div class="hero-sub">PINT-AE rides on the Peppol Decentralised Continuous Transaction Control and Exchange model. Five corners. <strong style="color:var(--white);">Both C2 and C3 report Tax Data Documents to C5 (FTA)</strong> — the dual-reporting model is what gives the regulator independent visibility on each side.</div>
+</header>
+
+<div class="controls">
+  <button class="btn secondary" id="btn-prev">◀ Previous</button>
+  <button class="btn primary" id="btn-next">Next Step ▶</button>
+  <div class="step-counter">Step <strong id="step-num">1</strong> of <strong id="step-total">12</strong></div>
+  <div style="flex:1;"></div>
+  <button class="btn secondary" id="btn-reset">Reset</button>
+  <button class="btn secondary" id="btn-all">Show all</button>
+</div>
+
+<div class="caption" id="caption">
+  <div class="caption-eyebrow" id="cap-eyebrow">STEP 1 — INVOICE SUBMISSION</div>
+  <div class="caption-title" id="cap-title">C1 submits invoice to C2</div>
+  <div class="caption-body" id="cap-body">The supplier's source system (ERP, core banking, PAS, or a manual upload) hands the invoice to ClearTax — sitting at C2 — over a REST API. Synchronous call.</div>
+  <div class="caption-meta" id="cap-meta">Actors: C1 → C2  •  Protocol: REST  •  Timing: Sync</div>
+</div>
+
+<div class="diagram-card">
+  <div class="mermaid" id="diagram"></div>
+</div>
+
+<div class="legend">
+  <div class="legend-item"><div class="legend-swatch" style="background:#1E2761;"></div>C1 — Supplier</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#00A896;"></div>C2 — ClearTax (Sender AP)</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#3F5BAA;"></div>C3 — Receiver AP</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#5675C8;"></div>C4 — Buyer</div>
+  <div class="legend-item"><div class="legend-swatch" style="background:#151A45;"></div>C5 — FTA (Tax Authority)</div>
+</div>
+
+
+<h2>Reference — every step, every code</h2>
+
+<div class="ref-grid">
+  <div class="ref-card">
+    <h3>Message flow — all 12 steps</h3>
+    <table class="ref">
+      <thead><tr><th>#</th><th>Message</th><th>Route</th><th>Protocol</th><th>Timing</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>submitInvoice()</td><td>C1 → C2</td><td>REST</td><td>Sync</td></tr>
+        <tr><td>2</td><td>SMP lookup, SBD wrap, sign</td><td>C2 internal</td><td>—</td><td>Sync</td></tr>
+        <tr><td>3</td><td>Report TDD (sender side)</td><td><strong>C2 → C5</strong></td><td>FTA API</td><td>≤ 15 min</td></tr>
+        <tr><td>4</td><td>AS4 message (Peppol Invoice)</td><td>C2 → C3</td><td>AS4</td><td>Sync</td></tr>
+        <tr><td>5</td><td>AS4 response (receipt)</td><td>C3 → C2</td><td>AS4</td><td>Immed.</td></tr>
+        <tr><td>6</td><td>MLS = AB (Acknowledged)</td><td>C3 → C2</td><td>AS4</td><td>Async</td></tr>
+        <tr><td>7</td><td>Validate (schema + business rules)</td><td>C3 internal</td><td>—</td><td>—</td></tr>
+        <tr><td>8</td><td>Report TDD (receiver side)</td><td><strong>C3 → C5</strong></td><td>FTA API</td><td>≤ 15 min</td></tr>
+        <tr><td>9</td><td>deliverInvoice()</td><td>C3 → C4</td><td>Custom</td><td>Async</td></tr>
+        <tr><td>10</td><td>MLS = AP (Accepted)</td><td>C3 → C2</td><td>AS4</td><td>Async</td></tr>
+        <tr><td>11</td><td>MLS = RE + reason — if rejected, also to C5</td><td>C3 → C2 + C5</td><td>AS4 / FTA API</td><td>Async</td></tr>
+        <tr><td>12</td><td>IMR (business response)</td><td>C4 → C1</td><td>BIS</td><td>Optional, days</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="ref-card">
+    <h3>MLS — Application Response codes</h3>
+    <table class="ref">
+      <thead><tr><th>Code</th><th>Status</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code amber">AB</span></td><td>Acknowledged</td><td>Receiver AP has the message; processing in progress.</td></tr>
+        <tr><td><span class="code green">AP</span></td><td>Accepted</td><td>Validated and delivered to C4.</td></tr>
+        <tr><td><span class="code red">RE</span></td><td>Rejected</td><td>Validation failed. Carries a reason code. <strong>Also reported to C5.</strong></td></tr>
+      </tbody>
+    </table>
+    <h3 style="margin-top:14px;">MLS — Status reason codes</h3>
+    <table class="ref">
+      <thead><tr><th>Code</th><th>Meaning</th></tr></thead>
+      <tbody>
+        <tr><td><span class="code">SV</span></td><td>Schema validation failure (XSD)</td></tr>
+        <tr><td><span class="code">BV</span></td><td>Business validation failure (Schematron)</td></tr>
+        <tr><td><span class="code">DL</span></td><td>Delivered to C4</td></tr>
+        <tr><td><span class="code">DF</span></td><td>Delivery failed (could not reach C4)</td></tr>
+        <tr><td><span class="code">NR</span></td><td>Not routable (no valid endpoint)</td></tr>
+      </tbody>
+    </table>
+    <p style="font-size:11.5px;color:var(--grey);margin-top:10px;">Multiple MLS messages can be sent for the same invoice — typical sequence is <span class="code amber">AB</span> first, then <span class="code green">AP</span>+<span class="code">DL</span> on success or <span class="code red">RE</span>+<span class="code">SV</span>/<span class="code">BV</span> on failure.</p>
+  </div>
+</div>
+
+<div class="ref-grid" style="margin-top:18px;">
+  <div class="ref-card">
+    <h3>UAE-specific timing</h3>
+    <table class="ref">
+      <thead><tr><th>Event</th><th>Window</th></tr></thead>
+      <tbody>
+        <tr><td>C2 → C5 TDD report</td><td>≤ 15 minutes from invoice timestamp</td></tr>
+        <tr><td>C3 → C5 TDD report (post-validation)</td><td>≤ 15 minutes</td></tr>
+        <tr><td>C3 → C2 MLS = AB</td><td>Immediate (acknowledgement)</td></tr>
+        <tr><td>C3 → C2 MLS = AP / RE</td><td>Async; after validation completes</td></tr>
+        <tr><td>RE handling (withdraw + correct + resubmit)</td><td>Before VAT-period close</td></tr>
+        <tr><td>Cancellation post-AP</td><td>Credit note linked to original</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="ref-card">
+    <h3>Retries at scale — what we run</h3>
+    <table class="ref">
+      <thead><tr><th>Failure</th><th>Behaviour</th></tr></thead>
+      <tbody>
+        <tr><td>C3 unreachable on AS4 send</td><td>Exponential backoff: 1m → 5m → 30m → 4h, then dead-letter + ops-paged.</td></tr>
+        <tr><td>MLS not received within SLA</td><td>C2 polls; escalate as NOT_DELIVERED if still pending after threshold.</td></tr>
+        <tr><td>Orphan / in-flight envelopes</td><td>Hourly reconciliation worker sweeps to catch silent losses.</td></tr>
+        <tr><td>C5 reporting failure</td><td>Independent retry queue with circuit-breaker; ops-paged on sustained failure.</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<div class="callout">
+  <strong>Key correction vs the simpler 4-corner Peppol model:</strong> in UAE DCTCE, both C2 and C3 report Tax Data Documents to C5. C2 reports the outbound invoice; C3 reports the validated invoice. If validation fails, C3 sends a <span class="code red">RE</span> MLS to C2 <em>and</em> reports the negative outcome to C5. This dual-reporting is what gives the FTA independent visibility on both sides of every transaction.
+</div>
+
+<div class="sources">
+  <strong>Sources:</strong>
+  <a href="https://docs.peppol.eu/edelivery/specs/mls/v1.0.0/mls/spec/" target="_blank">OpenPeppol MLS Specification v1.0.0</a> ·
+  <a href="https://openpeppol.atlassian.net/wiki/spaces/PAE/pages/4267835414/Peppol+UAE+DCTCE" target="_blank">Peppol UAE DCTCE — OpenPeppol Confluence</a> ·
+  <a href="https://docs.peppol.eu/poacc/billing/3.0/" target="_blank">Peppol BIS Billing 3.0</a> ·
+  <a href="https://www.vatupdate.com/2025/07/11/understanding-message-level-status-mls-in-uae-e-invoicing-peppol-framework-and-business-impact/" target="_blank">Understanding MLS in UAE — VATupdate</a> ·
+  <a href="https://orchidatax.com/uae-einvoicing-dctce-compliance-guide/" target="_blank">UAE E-Invoicing DCTCE & PINT-AE — Orchidatax</a>
+</div>
+
+</div>
+
+<script>
+mermaid.initialize({
+  startOnLoad: false,
+  theme: "base",
+  themeVariables: {
+    primaryColor: "#1E2761",
+    primaryTextColor: "#FFFFFF",
+    primaryBorderColor: "#1E2761",
+    lineColor: "#5C6679",
+    secondaryColor: "#00A896",
+    tertiaryColor: "#FFF4D6",
+    actorBkg: "#1E2761",
+    actorBorder: "#1E2761",
+    actorTextColor: "#FFFFFF",
+    actorLineColor: "#5C6679",
+    signalColor: "#212121",
+    signalTextColor: "#212121",
+    labelBoxBkgColor: "#E6F7F4",
+    labelBoxBorderColor: "#00A896",
+    labelTextColor: "#212121",
+    noteBkgColor: "#FFF4D6",
+    noteBorderColor: "#C58A1A",
+    noteTextColor: "#212121",
+    sequenceNumberColor: "#FFFFFF",
+  },
+  sequence: { showSequenceNumbers: true, mirrorActors: false, actorMargin: 80, boxMargin: 8, messageMargin: 32 }
+});
+
+const STEPS = [
+  {
+    eyebrow: "STEP 1 — INVOICE SUBMISSION",
+    title: "C1 submits invoice to C2",
+    body: "The supplier's source system (ERP, core banking, PAS, or a manual upload) hands the invoice to ClearTax — sitting at C2 — over a REST API. Synchronous call.",
+    meta: "Actors: C1 → C2  •  Protocol: REST  •  Timing: Sync",
+    msg: 'C1->>C2: submitInvoice() <br/>[REST]',
+  },
+  {
+    eyebrow: "STEP 2 — SMP LOOKUP + ENVELOPE",
+    title: "C2 prepares the Peppol envelope",
+    body: "ClearTax (C2) looks up the receiver's Access Point endpoint via the Peppol SMP, wraps the invoice in a Standard Business Document (SBD), and signs it.",
+    meta: "Actors: C2 internal  •  Protocol: SMP + signing  •  Timing: Sync (sub-second)",
+    msg: 'Note over C2: SMP lookup + SBD wrap + sign',
+  },
+  {
+    eyebrow: "STEP 3 — C2 REPORTS TO C5",
+    title: "C2 → C5: Tax Data Document (sender-side)",
+    body: "Within 15 minutes of the invoice timestamp, ClearTax reports the Tax Data Document (TDD) to the FTA at C5. This is the sender-side reporting — independent of whatever happens on the receiver side.",
+    meta: "Actors: C2 → C5  •  Protocol: FTA API  •  Timing: ≤ 15 minutes",
+    msg: 'C2->>C5: Report TDD (sender) <br/>[≤ 15 min]',
+  },
+  {
+    eyebrow: "STEP 4 — PEPPOL TRANSMISSION",
+    title: "C2 → C3: AS4 Peppol message",
+    body: "ClearTax transmits the signed invoice to the buyer's Access Point (C3) over the Peppol AS4 protocol. AS4 is sent only once.",
+    meta: "Actors: C2 → C3  •  Protocol: AS4  •  Timing: Sync",
+    msg: 'C2->>C3: AS4 (Peppol Invoice)',
+  },
+  {
+    eyebrow: "STEP 5 — AS4 RESPONSE",
+    title: "C3 → C2: AS4 receipt",
+    body: "C3 returns an AS4 response confirming receipt. This confirms bytes have been received — it does not yet confirm validation.",
+    meta: "Actors: C3 → C2  •  Protocol: AS4  •  Timing: Immediate",
+    msg: 'C3-->>C2: AS4 response (receipt)',
+  },
+  {
+    eyebrow: "STEP 6 — MLS = AB",
+    title: "C3 → C2: MLS = AB (Acknowledged)",
+    body: "C3 sends the first Message Level Status: AB — Acknowledged. The invoice is now in C3's processing queue. Validation is next.",
+    meta: "Actors: C3 → C2  •  Protocol: AS4 (MLS)  •  Code: AB",
+    msg: 'C3-->>C2: MLS = AB (Acknowledged)',
+  },
+  {
+    eyebrow: "STEP 7 — VALIDATION",
+    title: "C3 validates: schema + business rules",
+    body: "C3 runs schema validation (XSD) and business-rule validation (Schematron) against the PINT-AE specification. This is where most failures surface.",
+    meta: "Actors: C3 internal  •  Protocol: XSD + Schematron  •  Reason codes: SV (schema), BV (business)",
+    msg: 'Note over C3: Validate (XSD + Schematron)',
+  },
+  {
+    eyebrow: "STEP 8 — C3 REPORTS TO C5",
+    title: "C3 → C5: Tax Data Document (receiver-side)",
+    body: "Once validation passes, C3 reports its own Tax Data Document to the FTA at C5 — within 15 minutes. Now the FTA holds two independent reports of the same invoice (one from C2, one from C3) for cross-verification.",
+    meta: "Actors: C3 → C5  •  Protocol: FTA API  •  Timing: ≤ 15 minutes",
+    msg: 'C3->>C5: Report TDD (receiver) <br/>[≤ 15 min]',
+  },
+  {
+    eyebrow: "STEP 9 — DELIVERY TO BUYER",
+    title: "C3 → C4: deliverInvoice()",
+    body: "C3 hands the validated invoice to the buyer (C4) — typically into the buyer's ERP or AP system. The protocol here is per-buyer (custom), not Peppol.",
+    meta: "Actors: C3 → C4  •  Protocol: Custom (REST / SFTP / file)  •  Timing: Async",
+    msg: 'C3->>C4: deliverInvoice()',
+  },
+  {
+    eyebrow: "STEP 10 — MLS = AP",
+    title: "C3 → C2: MLS = AP (Accepted) — happy path",
+    body: "On the happy path, C3 sends MLS = AP — accepted and delivered to C4. Includes reason code DL (Delivered).",
+    meta: "Actors: C3 → C2  •  Code: AP + DL",
+    msg: 'C3-->>C2: MLS = AP + DL (Accepted)',
+  },
+  {
+    eyebrow: "STEP 11 — MLS = RE (alternate path)",
+    title: "C3 → C2 + C5: MLS = RE (Rejected) — also reported to FTA",
+    body: "If validation fails, C3 sends MLS = RE to C2 with a reason code (SV = schema, BV = business). Crucially, the negative outcome is also reported to C5 — the FTA sees both successful and failed validations independently.",
+    meta: "Actors: C3 → C2 + C5  •  Code: RE + SV/BV",
+    msg: 'C3-->>C2: MLS = RE + SV/BV (Rejected) <br/>C3->>C5: Negative TDD',
+  },
+  {
+    eyebrow: "STEP 12 — OPTIONAL IMR",
+    title: "C4 → C1: IMR (business response)",
+    body: "Optionally, the buyer (C4) sends an Invoice Message Response (IMR) back to the supplier (C1) — accepted, acknowledged, or rejected at the business level. This can take days and is independent of the technical MLS flow.",
+    meta: "Actors: C4 → C1  •  Protocol: BIS  •  Timing: Optional, days",
+    msg: 'C4-->>C1: IMR (business response, optional)',
+  },
+];
+
+let currentStep = 1;
+
+function buildMermaidSource(uptoStep) {
+  let lines = [
+    'sequenceDiagram',
+    '  participant C1 as C1<br/>Supplier',
+    '  participant C2 as C2<br/>ClearTax',
+    '  participant C3 as C3<br/>Receiver AP',
+    '  participant C4 as C4<br/>Buyer',
+    '  participant C5 as C5<br/>FTA',
+    ''
+  ];
+  for (let i = 0; i < uptoStep; i++) {
+    const isCurrent = (i === uptoStep - 1);
+    const m = STEPS[i].msg;
+    // Apply rect highlight on the current step
+    if (isCurrent) {
+      lines.push(`  rect rgb(230, 247, 244)`);
+      lines.push(`    ${m}`);
+      lines.push(`  end`);
+    } else {
+      lines.push(`  ${m}`);
+    }
+  }
+  return lines.join('\n');
+}
+
+async function renderStep() {
+  const total = STEPS.length;
+  document.getElementById('step-num').textContent = currentStep;
+  document.getElementById('step-total').textContent = total;
+  const s = STEPS[currentStep - 1];
+  document.getElementById('cap-eyebrow').textContent = s.eyebrow;
+  document.getElementById('cap-title').textContent = s.title;
+  document.getElementById('cap-body').textContent = s.body;
+  document.getElementById('cap-meta').textContent = s.meta;
+
+  const src = buildMermaidSource(currentStep);
+  const el = document.getElementById('diagram');
+  el.removeAttribute('data-processed');
+  el.innerHTML = src;
+  try {
+    const { svg } = await mermaid.render('seq-' + Date.now(), src);
+    el.innerHTML = svg;
+  } catch (e) {
+    el.textContent = 'Diagram render error: ' + e.message;
+  }
+
+  document.getElementById('btn-prev').disabled = (currentStep <= 1);
+  document.getElementById('btn-next').disabled = (currentStep >= total);
+}
+
+document.getElementById('btn-prev').addEventListener('click', () => {
+  if (currentStep > 1) { currentStep--; renderStep(); }
+});
+document.getElementById('btn-next').addEventListener('click', () => {
+  if (currentStep < STEPS.length) { currentStep++; renderStep(); }
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  currentStep = 1; renderStep();
+});
+document.getElementById('btn-all').addEventListener('click', () => {
+  currentStep = STEPS.length; renderStep();
+});
+
+renderStep();
+</script>
+</body>
+</html>
